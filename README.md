@@ -118,3 +118,25 @@ General heuristics:
 - `09_self_consistency.py` and `10_parameters.py` make several calls each by
   design (they sample multiple times).
 - Never commit your `.env` — it's already in `.gitignore`.
+
+
+---
+
+## The series
+
+This is one of eight standalone, hands-on deep dives into building with LLM APIs.
+Each one stands on its own — its own setup, examples, and capstone — and they all
+share the same house style: provider-agnostic, built from scratch (no
+frameworks), offline-first examples, and a real capstone. Do them in any order;
+this sequence builds naturally:
+
+1. [OpenAI API](https://github.com/Ailuue/openai-api-deep-dive) — the API from zero
+2. [Claude API](https://github.com/Ailuue/claude-api-deep-dive) — the same ideas, the Anthropic way
+3. [Prompt Engineering](https://github.com/Ailuue/prompt-engineering-deep-dive) — shape model behavior with better prompts (zero/few-shot, chain-of-thought, roles)
+4. [RAG](https://github.com/Ailuue/rag-deep-dive) — answer questions over your own documents
+5. [Evals](https://github.com/Ailuue/evals-deep-dive) — measure whether a change actually helps
+6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
+7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
+8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
+
+**You are here: #3 — Prompt Engineering.**
