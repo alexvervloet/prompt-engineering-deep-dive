@@ -1,2 +1,10 @@
+# Core: the OpenAI SDK (also reaches local OpenAI-compatible servers) +
+# python-dotenv to load your .env.
 openai>=1.30.0
 python-dotenv>=1.0.0
+
+# For PROVIDER=claude. Harmless to install even if you only use OpenAI.
+anthropic>=0.40.0
+
+# Pretty tables/markdown in the hands_on/optimize.py capstone.
+rich>=13.0.0
