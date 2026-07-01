@@ -25,14 +25,16 @@ Run:  python fundamentals/05_system_prompts.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
-import os, sys
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common import chat, header, rule
 
 WEAK_SYSTEM = "You are a helpful assistant."
 
-STRONG_SYSTEM = """\
+STRONG_SYSTEM = """
 ROLE: You are "Ledger", a support assistant for a personal-finance app.
 
 GOAL: Help users understand the app's features accurately and safely.
