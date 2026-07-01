@@ -22,7 +22,9 @@ Run:  python fundamentals/08_prompt_chaining.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
-import os, sys
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common import chat, header, rule
@@ -36,36 +38,52 @@ asking for it. also fixed the battery drain bug from before.
 
 def step_extract(notes: str) -> str:
     return chat(
-        [{"role": "user", "content":
-          f"Extract the 3 most important points from these notes as a short "
-          f"bullet list:\n\n{notes}"}],
+        [
+            {
+                "role": "user",
+                "content": f"Extract the 3 most important points from these notes as a short "
+                f"bullet list:\n\n{notes}",
+            }
+        ],
         temperature=0,
     )
 
 
 def step_draft(points: str) -> str:
     return chat(
-        [{"role": "user", "content":
-          f"Write a single tweet (<=280 chars) announcing this, upbeat but not "
-          f"hypey, no hashtags:\n\n{points}"}],
+        [
+            {
+                "role": "user",
+                "content": f"Write a single tweet (<=280 chars) announcing this, upbeat but not "
+                f"hypey, no hashtags:\n\n{points}",
+            }
+        ],
         temperature=0.7,
     )
 
 
 def step_critique(draft: str) -> str:
     return chat(
-        [{"role": "user", "content":
-          f"Critique this tweet against: clarity, length<=280, no hashtags, "
-          f"concrete benefit. List concrete fixes only.\n\nTweet:\n{draft}"}],
+        [
+            {
+                "role": "user",
+                "content": f"Critique this tweet against: clarity, length<=280, no hashtags, "
+                f"concrete benefit. List concrete fixes only.\n\nTweet:\n{draft}",
+            }
+        ],
         temperature=0,
     )
 
 
 def step_revise(draft: str, critique: str) -> str:
     return chat(
-        [{"role": "user", "content":
-          f"Rewrite the tweet applying every fix. Output only the final tweet.\n\n"
-          f"Original:\n{draft}\n\nFixes:\n{critique}"}],
+        [
+            {
+                "role": "user",
+                "content": f"Rewrite the tweet applying every fix. Output only the final tweet.\n\n"
+                f"Original:\n{draft}\n\nFixes:\n{critique}",
+            }
+        ],
         temperature=0.7,
     )
 
@@ -73,17 +91,25 @@ def step_revise(draft: str, critique: str) -> str:
 if __name__ == "__main__":
     header("PROMPT CHAINING / DECOMPOSITION")
 
-    rule(); print("\nStep 1 - EXTRACT key points ->")
-    points = step_extract(RAW_NOTES); print(points)
+    rule()
+    print("\nStep 1 - EXTRACT key points ->")
+    points = step_extract(RAW_NOTES)
+    print(points)
 
-    rule(); print("\nStep 2 - DRAFT a tweet ->")
-    draft = step_draft(points); print(draft)
+    rule()
+    print("\nStep 2 - DRAFT a tweet ->")
+    draft = step_draft(points)
+    print(draft)
 
-    rule(); print("\nStep 3 - CRITIQUE the draft ->")
-    critique = step_critique(draft); print(critique)
+    rule()
+    print("\nStep 3 - CRITIQUE the draft ->")
+    critique = step_critique(draft)
+    print(critique)
 
-    rule(); print("\nStep 4 - REVISE using the critique ->")
-    final = step_revise(draft, critique); print(final)
+    rule()
+    print("\nStep 4 - REVISE using the critique ->")
+    final = step_revise(draft, critique)
+    print(final)
 
     rule()
     print(
