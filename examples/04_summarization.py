@@ -13,7 +13,9 @@ Run:  python examples/04_summarization.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
-import os, sys
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common import chat, header, rule
@@ -29,6 +31,7 @@ was templated from a staging default that was never overridden for production.
 Action items: add a pre-deploy check that flags pool-size drops, add a synthetic
 peak-load test, and alert on connection-pool saturation.
 """
+
 
 # --------------------------------------------------------------------------
 # BEFORE: "summarize this" -> generic, unbounded length, no audience focus.
@@ -69,10 +72,12 @@ if __name__ == "__main__":
     header("EXAMPLE 4 - CONSTRAINED SUMMARIZATION")
     print("\nSource document:\n", DOCUMENT)
 
-    rule(); print("\n[BEFORE - 'summarize this'] ->")
+    rule()
+    print("\n[BEFORE - 'summarize this'] ->")
     print(naive())
 
-    rule(); print("\n[AFTER - audience + length + focus + structure] ->")
+    rule()
+    print("\n[AFTER - audience + length + focus + structure] ->")
     print(optimized())
 
     rule()
