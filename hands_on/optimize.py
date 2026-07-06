@@ -13,16 +13,16 @@ idea at full scale.)
 Run it (uses your configured PROVIDER — makes small, real API calls):
 
     # Compare the built-in naive vs tuned prompt on the support-ticket priority task:
-    python hands_on/optimize.py
+    secrun python hands_on/optimize.py
 
     # A different built-in task (sentiment classification):
-    python hands_on/optimize.py --task sentiment
+    secrun python hands_on/optimize.py --task sentiment
 
     # Show the cases each prompt got wrong:
-    python hands_on/optimize.py --show-misses
+    secrun python hands_on/optimize.py --show-misses
 
     # Bring your own: two prompt files + a JSONL of {"text","expected"} rows:
-    python hands_on/optimize.py --prompt-a naive.txt --prompt-b tuned.txt --data cases.jsonl
+    secrun python hands_on/optimize.py --prompt-a naive.txt --prompt-b tuned.txt --data cases.jsonl
 
 The one idea: a prompt isn't "better" because it reads better — it's better
 because it *scores* better on cases you care about. Read the source: `evaluate()`
