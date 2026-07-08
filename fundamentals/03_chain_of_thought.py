@@ -33,7 +33,7 @@ KEY IDEAS
     below: same "think silently" prompt, more dependent steps, and the
     silent version starts missing while visible CoT keeps landing exactly.
 
-Run:  python fundamentals/03_chain_of_thought.py
+Run:  secrun python fundamentals/03_chain_of_thought.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
