@@ -15,7 +15,7 @@ KEY IDEAS
   - Constrain the answer space ("one of: positive, negative, neutral").
   - Vague instructions are the #1 cause of bad zero-shot results.
 
-Run:  python fundamentals/01_zero_shot.py
+Run:  secrun python fundamentals/01_zero_shot.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
