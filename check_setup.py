@@ -2,7 +2,7 @@
 Setup check — run this first.
 =============================
 
-    python check_setup.py
+    secrun python check_setup.py
 
 Checks your Python version, the installed packages, your chosen PROVIDER, and the
 API key that provider needs — and tells you exactly what to fix. Makes NO API
@@ -56,7 +56,7 @@ def _get(env, name):
 
 
 ALWAYS = [
-    ("dotenv", "python-dotenv", "loads your key from .env"),
+    ("dotenv", "python-dotenv", "loads PROVIDER/config from .env"),
     ("rich", "rich", "tables in the optimize.py capstone"),
 ]
 PROVIDER_DEPS = {
@@ -122,8 +122,8 @@ def check_keys(env, provider):
     for name, prefix, placeholder in PROVIDER_KEYS.get(provider, []):
         value = _get(env, name)
         if not value or value == placeholder:
-            fail(f"{name} is not set (still the placeholder).")
-            print("    Open .env and paste your real key.")
+            fail(f"{name} is not set.")
+            print("    Store it in your OS keychain and run `secrun python check_setup.py` — see SECRETS.md.")
             all_ok = False
         elif prefix and not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
@@ -146,7 +146,7 @@ def main():
     print()
     if py and deps and keys:
         print(_c("All set! 🎉", "1;32"))
-        print("Start here:  python fundamentals/01_zero_shot.py")
+        print("Start here:  secrun python fundamentals/01_zero_shot.py")
         print("(Every lesson makes a small, real API call — there's no offline mode.)")
         return 0
     print(_c("Not ready yet — fix the ✗ items above, then run this again.", "1;31"))
