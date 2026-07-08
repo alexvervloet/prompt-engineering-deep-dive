@@ -11,7 +11,7 @@ Optimizations applied: a CLOSED label set with definitions, a forced single labe
 via forced JSON, an explicit 'other' escape hatch, a confidence score for routing
 to humans, and a couple of few-shot edge cases for the tricky boundaries.
 
-Run:  python examples/06_classification.py
+Run:  secrun python examples/06_classification.py
 """
 
 import json
