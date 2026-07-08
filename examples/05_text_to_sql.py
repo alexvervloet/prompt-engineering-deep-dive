@@ -9,7 +9,7 @@ Optimizations applied: provide the SCHEMA as context, constrain the SQL dialect,
 demand a read-only query, give a few-shot example, force step-by-step mapping,
 and require output as runnable SQL only (no markdown fences).
 
-Run:  python examples/05_text_to_sql.py
+Run:  secrun python examples/05_text_to_sql.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
