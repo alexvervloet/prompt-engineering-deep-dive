@@ -9,7 +9,7 @@ Optimizations applied: define the audience + purpose, hard length limits,
 extraction focus ("only what changes a decision"), grounding ("only use the
 text"), and a fixed output structure.
 
-Run:  python examples/04_summarization.py
+Run:  secrun python examples/04_summarization.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
