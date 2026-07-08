@@ -8,7 +8,7 @@ This file shows a NAIVE prompt vs an OPTIMIZED one and explains every change.
 The optimized version combines: system prompt (role + tone + policy),
 explicit constraints, structured output, and a fallback rule.
 
-Run:  python examples/01_customer_support_reply.py
+Run:  secrun python examples/01_customer_support_reply.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
