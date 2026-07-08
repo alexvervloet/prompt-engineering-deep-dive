@@ -16,7 +16,7 @@ KEY IDEAS
   - Pair the persona with the audience: who is the answer FOR?
   - Personas are steering, not magic credentials -- they don't make facts true.
 
-Run:  python fundamentals/04_role_prompting.py
+Run:  secrun python fundamentals/04_role_prompting.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
