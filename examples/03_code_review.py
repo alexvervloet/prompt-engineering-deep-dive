@@ -9,7 +9,7 @@ Optimizations applied: expert persona, a review RUBRIC (what to look for),
 severity levels, a strict output format, and an instruction to cite line-ish
 locations and propose concrete fixes.
 
-Run:  python examples/03_code_review.py
+Run:  secrun python examples/03_code_review.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
