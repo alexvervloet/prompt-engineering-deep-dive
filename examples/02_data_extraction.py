@@ -9,7 +9,7 @@ Optimizations applied: explicit schema with types, normalization rules,
 null handling, few-shot-style field descriptions, forced-JSON output, and
 defensive parsing.
 
-Run:  python examples/02_data_extraction.py
+Run:  secrun python examples/02_data_extraction.py
 """
 
 import json
