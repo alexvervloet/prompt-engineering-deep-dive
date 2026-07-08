@@ -21,7 +21,7 @@ KEY IDEAS
   - Constraints are more reliable as positive rules ("Use at most 3 sentences")
     than negatives ("Don't be too long").
 
-Run:  python fundamentals/05_system_prompts.py
+Run:  secrun python fundamentals/05_system_prompts.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
