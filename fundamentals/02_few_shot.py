@@ -17,7 +17,7 @@ KEY IDEAS
   - Keep formatting IDENTICAL across examples -- the model copies it.
   - Balance your label distribution; don't make every example "Positive".
 
-Run:  python fundamentals/02_few_shot.py
+Run:  secrun python fundamentals/02_few_shot.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
