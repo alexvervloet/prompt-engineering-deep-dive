@@ -242,7 +242,7 @@ Each is the "context/constraints" rung of the mental model doing the heavy lifti
 
 ## Capstone — `optimize.py`
 
-**Predict.** You run `python hands_on/optimize.py`. The tuned sentiment prompt
+**Predict.** You run `secrun python hands_on/optimize.py`. The tuned sentiment prompt
 *reads* far better than the naive one. Does that guarantee it scores higher? What
 would make you *not* ship it?
 
@@ -270,7 +270,7 @@ test set is mostly edge cases.
 two prompt files, then run `optimize.py --prompt-a naive.txt --prompt-b tuned.txt
 --data cases.jsonl`. The first time it tells you your "better" prompt was actually
 worse, the discipline has clicked — and you're ready for the
-[Evals deep dive](https://github.com/Ailuue/evals-deep-dive), which is this idea at
+[Evals deep dive](https://github.com/alexvervloet/evals-deep-dive), which is this idea at
 full scale.
 
 ---
