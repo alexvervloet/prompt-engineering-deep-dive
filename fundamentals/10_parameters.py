@@ -27,7 +27,7 @@ PROVIDER NOTE
   - `seed` is an OpenAI feature (reproducible sampling); Claude has no seed. The
     runnable calls here use only temperature + max_tokens, so they work on both.
 
-Run:  python fundamentals/10_parameters.py
+Run:  secrun python fundamentals/10_parameters.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
