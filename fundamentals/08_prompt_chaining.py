@@ -18,7 +18,7 @@ KEY IDEAS
   - A "generate -> critique -> revise" loop (self-refinement) reliably raises
     quality. The critic step is where most of the gains come from.
 
-Run:  python fundamentals/08_prompt_chaining.py
+Run:  secrun python fundamentals/08_prompt_chaining.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
