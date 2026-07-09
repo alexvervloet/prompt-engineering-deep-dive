@@ -8,8 +8,8 @@ is a small, runnable Python script you read, run, and tweak. No framework magic 
 just enough code to *see* how each idea changes what the model does.
 
 This is the third of eight core repos in the series. The first two teach the API
-call ([OpenAI](https://github.com/Ailuue/openai-api-deep-dive),
-[Claude](https://github.com/Ailuue/claude-api-deep-dive)); this one teaches you to
+call ([OpenAI](https://github.com/alexvervloet/openai-api-deep-dive),
+[Claude](https://github.com/alexvervloet/claude-api-deep-dive)); this one teaches you to
 get more out of that same call by asking better.
 
 Like its siblings, it's meant to be *walked through*, not just read. Each script
@@ -43,12 +43,13 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Choose your provider and add your key
+# 3. Choose your provider (set PROVIDER in .env); your key loads separately
 cp .env.example .env
-#    ...then open .env. Set PROVIDER to "openai" or "claude" and paste the key.
+#    Your API key does NOT go in .env. Store it in your OS keychain and run
+#    lessons with `secrun` — 2-minute setup in ../SECRETS.md.
 
 # 4. Confirm everything is wired up (makes no API call, costs nothing)
-python check_setup.py
+secrun python check_setup.py       # secrun injects your key so the check can see it
 ```
 
 Prompt engineering is provider-agnostic, so this repo is too — pick whichever stack
@@ -77,7 +78,7 @@ OpenAI, hosted Claude, or a model on your laptop, for free.
 Each file is a self-contained before/after. Run them in order.
 
 ```bash
-python fundamentals/01_zero_shot.py
+secrun python fundamentals/01_zero_shot.py
 ```
 
 | File | Technique | One-line idea |
@@ -105,7 +106,7 @@ Each shows a **naïve prompt vs an optimized prompt** for a real job, and explai
 *why* every change helps.
 
 ```bash
-python examples/03_code_review.py
+secrun python examples/03_code_review.py
 ```
 
 | File | Use case | Techniques combined |
@@ -149,17 +150,17 @@ General heuristics:
 Everything points here. Every lesson *argues* a tuned prompt beats a naive one;
 the capstone stops arguing and **measures it** — it runs both prompts over a small
 labeled set, scores each, and tells you which won and by how much. That's the whole
-discipline in one tool, and the bridge to the [Evals deep dive](https://github.com/Ailuue/evals-deep-dive).
+discipline in one tool, and the bridge to the [Evals deep dive](https://github.com/alexvervloet/evals-deep-dive).
 
 ```bash
 # Compare the built-in naive vs tuned prompt on a sentiment task:
-python hands_on/optimize.py
+secrun python hands_on/optimize.py
 
 # A different built-in task (support-ticket priority), showing the misses:
-python hands_on/optimize.py --task priority --show-misses
+secrun python hands_on/optimize.py --task priority --show-misses
 
 # Bring your own: two prompt files + a JSONL of {"text","expected"} rows:
-python hands_on/optimize.py --prompt-a naive.txt --prompt-b tuned.txt --data cases.jsonl
+secrun python hands_on/optimize.py --prompt-a naive.txt --prompt-b tuned.txt --data cases.jsonl
 ```
 
 Read [hands_on/optimize.py](hands_on/optimize.py): `evaluate()` is the whole loop
@@ -185,13 +186,13 @@ tells you your "better" prompt was actually *worse*, prompt engineering has clic
 You've learned to shape a single call. The series builds outward from here:
 
 - **Ground it in your data** — when the model needs facts it doesn't have, retrieve
-  the right text and put it in the context. → [RAG](https://github.com/Ailuue/rag-deep-dive)
+  the right text and put it in the context. → [RAG](https://github.com/alexvervloet/rag-deep-dive)
 - **Measure it at scale** — the capstone is a tiny eval; the real discipline (judges,
-  metrics, significance, CI gates) is its own dive. → [Evals](https://github.com/Ailuue/evals-deep-dive)
+  metrics, significance, CI gates) is its own dive. → [Evals](https://github.com/alexvervloet/evals-deep-dive)
 - **Let it act** — ReAct (lesson 11) by hand is the seed of an agent loop with real
-  tools. → [Agents](https://github.com/Ailuue/agents-deep-dive)
+  tools. → [Agents](https://github.com/alexvervloet/agents-deep-dive)
 - **Harden it** — delimiters (lesson 07) are the first, weakest injection defense;
-  the real defense-in-depth is its own dive. → [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive)
+  the real defense-in-depth is its own dive. → [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive)
 - **Reasoning models** — lesson 14 is the start; prompting o-series / extended
   thinking well is a growing skill.
 
@@ -213,7 +214,7 @@ prompts like the code they are:
 These shortcuts are right for learning and wrong for production. All of those
 concerns — observability, cost, reliability, caching, guardrails, prompt
 versioning, and eval gates — are built from scratch and wired into one running app
-in **[Production](https://github.com/Ailuue/ai-in-production-deep-dive)** (#8 in the
+in **[Production](https://github.com/alexvervloet/ai-in-production-deep-dive)** (#8 in the
 series). It runs **offline on a mock provider**, so you can see the whole ops
 machinery with no key and no cost.
 
@@ -240,11 +241,11 @@ hands_on/
 
 ## Troubleshooting
 
-Run `python check_setup.py` first — it catches most problems. Then, by symptom:
+Run `secrun python check_setup.py` first — it catches most problems. Then, by symptom:
 
 | What you see | What it means / the fix |
 |--------------|-------------------------|
-| `PROVIDER=... needs ... in .env` | The active stack is missing its key. Set `PROVIDER` and the matching key in `.env`. |
+| `PROVIDER=... needs ... in the environment` | Set `PROVIDER` in `.env`, then load the key from your keychain by running under `secrun` — see [SECRETS.md](../SECRETS.md). |
 | `ModuleNotFoundError` (openai / anthropic / rich) | Dependencies aren't installed or the venv isn't active. `source .venv/bin/activate` then `pip install -r requirements.txt`. |
 | `AuthenticationError` / 401 | The key is present but wrong — check it matches the `PROVIDER` you set. |
 | A JSON lesson prints prose, not JSON | A weaker (often local) model ignored the format. `json=True` / `structured()` help; the lessons also parse defensively. |
@@ -258,29 +259,30 @@ at the top, and run it directly.
 
 ## The series
 
-This is one of thirteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus five bonus dives.
+This is one of sixteen standalone, hands-on deep dives into building with LLM APIs — eight core, plus eight bonus dives.
 Each one stands on its own — its own setup, examples, and capstone — and they all
 share the same house style: provider-agnostic, built from scratch (no
 frameworks), offline-first examples, and a real capstone. Do them in any order;
 this sequence builds naturally:
 
-1. [OpenAI API](https://github.com/Ailuue/openai-api-deep-dive) — the API from zero
-2. [Claude API](https://github.com/Ailuue/claude-api-deep-dive) — the same ideas, the Anthropic way
-3. [Prompt Engineering](https://github.com/Ailuue/prompt-engineering-deep-dive) — shape model behavior with better prompts (zero/few-shot, chain-of-thought, roles)
-4. [RAG](https://github.com/Ailuue/rag-deep-dive) — answer questions over your own documents
-5. [Evals](https://github.com/Ailuue/evals-deep-dive) — measure whether a change actually helps
-6. [Agents](https://github.com/Ailuue/agents-deep-dive) — give a model tools and a loop so it can act
-7. [Prompt Injection & Guardrails](https://github.com/Ailuue/prompt-injection-deep-dive) — attack and defend all of the above
-8. [Production](https://github.com/Ailuue/ai-in-production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
+1. [OpenAI API](https://github.com/alexvervloet/openai-api-deep-dive) — the API from zero
+2. [Claude API](https://github.com/alexvervloet/claude-api-deep-dive) — the same ideas, the Anthropic way
+3. [Prompt Engineering](https://github.com/alexvervloet/prompt-engineering-deep-dive) — shape model behavior with better prompts (zero/few-shot, chain-of-thought, roles)
+4. [RAG](https://github.com/alexvervloet/rag-deep-dive) — answer questions over your own documents
+5. [Evals](https://github.com/alexvervloet/evals-deep-dive) — measure whether a change actually helps
+6. [Agents](https://github.com/alexvervloet/agents-deep-dive) — give a model tools and a loop so it can act
+7. [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive) — attack and defend all of the above
+8. [Production](https://github.com/alexvervloet/ai-in-production-deep-dive) — operate one app end to end: observability, cost, reliability, caching, guardrails, prompt versioning, eval gates
 
 **Bonus dives** — standalone, slotting in where they're most useful:
 
-- [Context Engineering](https://github.com/Ailuue/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
-- [Multimodal](https://github.com/Ailuue/multimodal-deep-dive) — images & audio, not just text
-- [Fine-tuning](https://github.com/Ailuue/fine-tuning-deep-dive) — teach a model new behavior by example
-- [MCP](https://github.com/Ailuue/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
-- [Local Models](https://github.com/Ailuue/local-models-deep-dive) — run open-weight models on your own machine
-- [Agent Harnesses](https://github.com/Ailuue/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
-- [Realtime Voice](https://github.com/Ailuue/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Context Engineering](https://github.com/alexvervloet/context-engineering-deep-dive) — manage what's in the window: memory, compaction, assembly
+- [Multimodal](https://github.com/alexvervloet/multimodal-deep-dive) — images & audio, not just text
+- [Fine-tuning](https://github.com/alexvervloet/fine-tuning-deep-dive) — teach a model new behavior by example
+- [MCP](https://github.com/alexvervloet/mcp-deep-dive) — serve tools, data & prompts to any LLM over a standard protocol
+- [Local Models](https://github.com/alexvervloet/local-models-deep-dive) — run open-weight models on your own machine
+- [Agent Harnesses](https://github.com/alexvervloet/agent-harness-deep-dive) — build on the loop: hooks, permissions, sandboxing, subagents
+- [Realtime Voice](https://github.com/alexvervloet/realtime-voice-deep-dive) — low-latency speech-to-speech agents
+- [Observability](https://github.com/alexvervloet/observability-deep-dive) — watch a running app over time: drift, quality, alerting, the flywheel
 
 **You are here: #3 — Prompt Engineering.**
