@@ -21,7 +21,7 @@ KEY IDEAS
   - Great for bootstrapping: generate a strong first draft, then refine by hand.
     Also pairs with evals (repo #5) — let the model propose variants, score them.
 
-Run:  python fundamentals/13_meta_prompting.py
+Run:  secrun python fundamentals/13_meta_prompting.py
 """
 
 import os
