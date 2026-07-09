@@ -21,7 +21,7 @@ the contrast in *prompting style*; set MODEL/REASONING_MODEL in .env to try a re
 one. On a normal model the verbose version often wins; on a reasoning model the
 minimal version usually matches or beats it with fewer tokens.)
 
-Run:  python fundamentals/14_reasoning_models.py
+Run:  secrun python fundamentals/14_reasoning_models.py
 """
 
 import os
