@@ -26,7 +26,7 @@ KEY IDEAS
     tool-calling systems fix this with schema-validated structured arguments
     instead of free-text regex parsing.
 
-Run:  python fundamentals/11_react.py
+Run:  secrun python fundamentals/11_react.py
 """
 
 import os
