@@ -20,7 +20,7 @@ KEY IDEAS
   - ALWAYS wrap json.loads in try/except -- never trust the bytes blindly.
   - Level 2 is the portable workhorse; level 3 is the strongest guarantee.
 
-Run:  python fundamentals/06_structured_output.py
+Run:  secrun python fundamentals/06_structured_output.py
 """
 
 import json
