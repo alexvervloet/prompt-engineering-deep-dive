@@ -14,7 +14,7 @@ KEY IDEAS
     of a single fact, classification near a decision boundary).
   - It's a cheap, model-agnostic accuracy boost with no fine-tuning.
 
-Run:  python fundamentals/09_self_consistency.py
+Run:  secrun python fundamentals/09_self_consistency.py
 """
 
 # --- make the repo-root 'common' package importable when run directly ---
