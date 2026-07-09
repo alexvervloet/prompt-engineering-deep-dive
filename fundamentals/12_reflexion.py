@@ -26,7 +26,7 @@ KEY IDEAS
   - This is how coding agents self-heal: write code -> run tests -> read the failure
     -> fix -> rerun.
 
-Run:  python fundamentals/12_reflexion.py
+Run:  secrun python fundamentals/12_reflexion.py
 """
 
 import os
