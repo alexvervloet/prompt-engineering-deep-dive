@@ -1,10 +1,9 @@
 """
-common/providers.py — the ONLY file in this repo that talks to a model provider.
-================================================================================
+common/providers.py: the ONLY file in this repo that talks to a model provider.
 
 Prompt engineering is provider-agnostic: a clearer prompt is a clearer prompt
-whether OpenAI or Claude serves it. So we hide the one provider-specific thing —
-turning a list of messages into a reply — behind a few small functions, and every
+whether OpenAI or Claude serves it. So we hide the one provider-specific thing 
+turning a list of messages into a reply, behind a few small functions, and every
 lesson stays focused on the *prompting*, not the plumbing.
 
 Pick your stack with `PROVIDER` in `.env`:
@@ -15,7 +14,7 @@ Pick your stack with `PROVIDER` in `.env`:
 Because the OpenAI stack uses the OpenAI SDK, it *also* speaks to any
 OpenAI-compatible local server (Ollama, LM Studio, llama.cpp, vLLM): keep
 `PROVIDER=openai` and point `OPENAI_BASE_URL` at the local endpoint. So this one
-file gives you hosted OpenAI, hosted Claude, and local models — with no change to
+file gives you hosted OpenAI, hosted Claude, and local models, with no change to
 any lesson.
 
 What this module exposes:
@@ -71,7 +70,7 @@ def required_keys() -> list[str]:
 
 
 def describe() -> str:
-    """One-line summary of the active stack — handy for a lesson to print."""
+    """One-line summary of the active stack, handy for a lesson to print."""
     p = provider_name()
     if p in _KEYS:
         return f"{p}  (chat={chat_model()})"
@@ -82,7 +81,7 @@ def ensure_ready() -> None:
     """Fail fast with a friendly message if the chosen stack isn't configured.
 
     Called automatically by `chat`/`chat_stream`/`structured`, so individual
-    lessons don't have to — but you can call it yourself right after startup.
+    lessons don't have to, but you can call it yourself right after startup.
     """
     p = provider_name()
     if p not in _KEYS:
@@ -189,7 +188,7 @@ def chat_stream(
     temperature: float = 0.7,
     max_tokens: int = 2048,
 ):
-    """Yield the reply in chunks as it's generated — for a live, typewriter feel."""
+    """Yield the reply in chunks as it's generated, for a live, typewriter feel."""
     ensure_ready()
     p = provider_name()
 
