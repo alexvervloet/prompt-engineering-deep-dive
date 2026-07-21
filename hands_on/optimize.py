@@ -1,16 +1,15 @@
 """
-optimize.py — the capstone: prove a prompt change actually helped.
-==================================================================
+optimize.py: the capstone: prove a prompt change actually helped.
 
 Every lesson in this repo shows a *naive* prompt next to a *tuned* one and argues
 the tuned version is better. This capstone stops arguing and **measures it**: it
 runs both prompts over a small labeled set, scores each output, and tells you
-which prompt won — and by how much. That's the whole discipline of prompt
+which prompt won, and by how much. That's the whole discipline of prompt
 engineering in one tool: change the prompt, run the numbers, keep the change only
 if the number goes up. (It's also the bridge to the Evals deep dive, which is this
 idea at full scale.)
 
-Run it (uses your configured PROVIDER — makes small, real API calls):
+Run it (uses your configured PROVIDER, making small, real API calls):
 
     # Compare the built-in naive vs tuned prompt on the support-ticket priority task:
     secrun python hands_on/optimize.py
@@ -24,7 +23,7 @@ Run it (uses your configured PROVIDER — makes small, real API calls):
     # Bring your own: two prompt files + a JSONL of {"text","expected"} rows:
     secrun python hands_on/optimize.py --prompt-a naive.txt --prompt-b tuned.txt --data cases.jsonl
 
-The one idea: a prompt isn't "better" because it reads better — it's better
+The one idea: a prompt isn't "better" because it reads better. It's better
 because it *scores* better on cases you care about. Read the source: `evaluate()`
 is the whole loop (run a prompt over the cases, score each, average), and
 `compare()` prints the verdict.
@@ -68,7 +67,7 @@ class Task:
 def score(output: str, expected: str) -> bool:
     """Tolerant exact-ish match: is the expected label a word in the output?
 
-    Markdown decoration (*, #, `) is stripped before matching — it's chrome,
+    Markdown decoration (*, #, `) is stripped before matching; it's chrome,
     not signal, and shouldn't count for or against either prompt. A compound
     hedge like "Mixed/Negative" still fails to match "Mixed": refusing to
     commit to one label is a real failure, not a formatting artifact.
@@ -86,7 +85,7 @@ SENTIMENT = Task(
         "You classify product-review sentiment.\n"
         "Reply with EXACTLY one word: Positive, Negative, or Mixed.\n"
         "Use Mixed when the review has both clear praise and clear complaints.\n"
-        "No explanation, no punctuation — just the label."
+        "No explanation, no punctuation, just the label."
     ),
     cases=[
         Case("This laptop is fast, light, and the screen is stunning. Love it.", "Positive"),
@@ -156,9 +155,9 @@ def compare(task: Task, show_misses: bool) -> None:
     if delta > 0:
         console.print(f"\n[bold green]Prompt B (tuned) wins[/bold green] by {delta:+.0%}.")
     elif delta < 0:
-        console.print(f"\n[bold red]Prompt B (tuned) is worse[/bold red] by {delta:+.0%} — don't ship it.")
+        console.print(f"\n[bold red]Prompt B (tuned) is worse[/bold red] by {delta:+.0%}. Don't ship it.")
     else:
-        console.print("\n[bold yellow]A tie[/bold yellow] on this set — try harder cases before deciding.")
+        console.print("\n[bold yellow]A tie[/bold yellow] on this set; try harder cases before deciding.")
 
     if show_misses:
         for label, results in (("A · naive", results_a), ("B · tuned", results_b)):
@@ -170,7 +169,7 @@ def compare(task: Task, show_misses: bool) -> None:
                                   f"[red]{out!r}[/red]  ←  {case.text[:60]}")
 
     console.print(
-        "\n[dim]The lesson: the tuned prompt isn't better because it reads better — "
+        "\n[dim]The lesson: the tuned prompt isn't better because it reads better, "
         "it's better because it scored better. Measure, don't argue.[/dim]"
     )
 
