@@ -1,10 +1,9 @@
 """
 11 - ReAct (REASON + ACT)
-=========================
 
 ReAct interleaves *reasoning* and *acting*: instead of answering in one shot, the
 model alternates Thought -> Action -> Observation until it has enough to answer.
-It's the prompting pattern under most "agents" — and you can do it with nothing but
+It's the prompting pattern under most "agents", and you can do it with nothing but
 a prompt and a parse loop, which is exactly what this file shows.
 
 The loop, driven entirely by prompting:
@@ -14,13 +13,13 @@ The loop, driven entirely by prompting:
   4. Repeat until the model writes `Answer:` instead of an Action.
 
 KEY IDEAS
-  - The model can't actually *do* anything — it emits a request to act, you act,
+  - The model can't actually *do* anything. It emits a request to act, you act,
     you hand back the result. Same control split as real tool use.
   - A `stop` sequence ("Observation:") is what hands control back to your code at
-    the right moment — without it the model hallucinates its own observations.
+    the right moment; without it the model hallucinates its own observations.
   - Grounding each step in a real Observation is what stops the model from making
     up facts: it reasons over data it actually fetched, not its memory.
-  - The `tool[input]` regex only enforces the outer syntax — it does NOT validate
+  - The `tool[input]` regex only enforces the outer syntax. It does NOT validate
     that `input` is in a format the tool understands (e.g. `lookup[height of the
     Eiffel Tower]` parses fine but won't match the FACTS dict key below). Real
     tool-calling systems fix this with schema-validated structured arguments
@@ -108,7 +107,7 @@ def react(question: str, max_steps: int = 5) -> str:
 
 
 if __name__ == "__main__":
-    header("ReAct — REASON + ACT")
+    header("ReAct: REASON + ACT")
     question = (
         "How many meters taller is the Eiffel Tower than a 100-meter building, doubled?"
     )

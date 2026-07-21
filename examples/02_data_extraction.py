@@ -1,6 +1,5 @@
 """
 EXAMPLE 2 - STRUCTURED DATA EXTRACTION
-======================================
 
 USE CASE: pull clean, typed records out of messy unstructured text (here, a
 job posting) so downstream code can store/filter them.

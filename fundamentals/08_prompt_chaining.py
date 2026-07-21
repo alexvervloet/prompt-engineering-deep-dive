@@ -1,6 +1,5 @@
 """
 08 - PROMPT CHAINING / TASK DECOMPOSITION
-=========================================
 
 Hard tasks get more reliable when you BREAK them into a pipeline of smaller
 prompts, each doing one job and feeding the next. Each step is easy to test,

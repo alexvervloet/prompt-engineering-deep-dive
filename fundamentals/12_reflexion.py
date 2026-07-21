@@ -1,11 +1,10 @@
 """
 12 - REFLEXION (SELF-CORRECTION FROM A FEEDBACK SIGNAL)
-=======================================================
 
 Prompt chaining (file 08) does generate -> critique -> revise *once*. Reflexion
 goes further: the model attempts, you RUN A CHECK that produces a concrete signal
 (pass/fail + why), and on failure the model REFLECTS on that signal and tries
-again — looping until it passes or you give up.
+again: looping until it passes or you give up.
 
 The difference that matters: the feedback is *grounded* in a real verifier, not the
 model's own opinion. A model grading itself is unreliable; a model reacting to "your
@@ -36,7 +35,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from common import chat, header, rule
 
-# The task has hard, machine-checkable constraints — perfect for a verifier.
+# The task has hard, machine-checkable constraints: perfect for a verifier.
 TASK = (
     "Write a single sentence that:\n"
     "  (a) is about the ocean,\n"
@@ -86,7 +85,7 @@ def reflexion(max_attempts: int = 4) -> str:
 
 
 if __name__ == "__main__":
-    header("REFLEXION — SELF-CORRECTION FROM A FEEDBACK SIGNAL")
+    header("REFLEXION: SELF-CORRECTION FROM A FEEDBACK SIGNAL")
     print(f"\n{TASK}\n")
     rule()
     final = reflexion()

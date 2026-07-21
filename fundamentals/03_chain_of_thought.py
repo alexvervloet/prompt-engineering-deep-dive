@@ -1,6 +1,5 @@
 """
 03 - CHAIN-OF-THOUGHT (CoT) PROMPTING
-=====================================
 
 Chain-of-thought = you ask the model to REASON STEP BY STEP before committing
 to a final answer. Giving the model room to "think out loud" dramatically

@@ -1,6 +1,5 @@
 """
 09 - SELF-CONSISTENCY (SAMPLING + VOTING)
-=========================================
 
 For problems with one correct answer but many reasoning paths, a single CoT run
 can land on a wrong path. SELF-CONSISTENCY samples the SAME prompt several times

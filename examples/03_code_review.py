@@ -1,6 +1,5 @@
 """
 EXAMPLE 3 - CODE REVIEW ASSISTANT
-=================================
 
 USE CASE: review a code snippet and return actionable, prioritized findings --
 not a vague "looks fine" or a wall of nitpicks.

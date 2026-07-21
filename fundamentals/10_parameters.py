@@ -1,6 +1,5 @@
 """
 10 - DECODING PARAMETERS (temperature, top_p, max_tokens, seed, stop)
-=====================================================================
 
 The prompt is only half the story -- the SAMPLING parameters control how the
 model turns its probabilities into text. Same prompt + different params =

@@ -1,9 +1,8 @@
 """
 13 - META-PROMPTING (USE THE MODEL TO IMPROVE THE PROMPT)
-=========================================================
 
 A surprisingly effective trick: when a prompt underperforms, don't hand-tune it for
-an hour — ask the model to REWRITE it. The model knows the techniques in this repo
+an hour: ask the model to REWRITE it. The model knows the techniques in this repo
 (clear instructions, output format, role, edge cases) and can apply them to your
 draft. This is "meta-prompting": a prompt whose job is to produce a better prompt.
 
@@ -15,11 +14,11 @@ This file:
 
 KEY IDEAS
   - The meta-prompt should ask for a *reusable* prompt (with a slot for the input),
-    not an answer to the specific example — otherwise you just get one output.
+    not an answer to the specific example; otherwise you just get one output.
   - Give the meta-prompt a rubric: role, explicit steps, output format, how to
     handle missing info. You're telling the model what "good" looks like.
   - Great for bootstrapping: generate a strong first draft, then refine by hand.
-    Also pairs with evals (repo #5) — let the model propose variants, score them.
+    Also pairs with evals (repo #5): let the model propose variants, score them.
 
 Run:  secrun python fundamentals/13_meta_prompting.py
 """
@@ -64,7 +63,7 @@ def run_prompt(prompt_template: str, text: str) -> str:
 
 
 if __name__ == "__main__":
-    header("META-PROMPTING — LET THE MODEL IMPROVE THE PROMPT")
+    header("META-PROMPTING: LET THE MODEL IMPROVE THE PROMPT")
 
     print("\n[1] Weak prompt ->", repr(WEAK_PROMPT))
     print("\n[Result with the weak prompt] ->")

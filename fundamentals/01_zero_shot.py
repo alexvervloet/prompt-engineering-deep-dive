@@ -1,6 +1,5 @@
 """
 01 - ZERO-SHOT PROMPTING
-========================
 
 Zero-shot = you ask the model to do a task WITHOUT giving it any worked
 examples. You rely entirely on (a) the model's pretrained knowledge and

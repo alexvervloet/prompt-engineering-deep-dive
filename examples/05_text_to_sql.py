@@ -1,6 +1,5 @@
 """
 EXAMPLE 5 - NATURAL LANGUAGE -> SQL
-===================================
 
 USE CASE: turn a plain-English question into a correct SQL query a program can
 run. A classic spot where a few key constraints prevent broken or unsafe SQL.

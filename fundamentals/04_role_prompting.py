@@ -1,6 +1,5 @@
 """
 04 - ROLE / PERSONA PROMPTING
-=============================
 
 Role prompting = you assign the model a PERSONA or expertise ("You are a senior
 security engineer...") to steer its vocabulary, depth, priorities, and tone.

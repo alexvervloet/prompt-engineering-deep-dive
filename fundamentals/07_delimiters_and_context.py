@@ -1,6 +1,5 @@
 """
 07 - DELIMITERS, CONTEXT & GROUNDING
-====================================
 
 When a prompt mixes your INSTRUCTIONS with user-or-document CONTENT, the model
 can get confused about which is which -- and a malicious document can even try

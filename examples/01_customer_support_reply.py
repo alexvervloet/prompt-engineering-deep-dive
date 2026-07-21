@@ -1,6 +1,5 @@
 """
 EXAMPLE 1 - CUSTOMER SUPPORT REPLY
-==================================
 
 USE CASE: turn an angry customer email into an on-brand, helpful reply.
 

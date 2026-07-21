@@ -1,6 +1,5 @@
 """
 02 - FEW-SHOT PROMPTING
-=======================
 
 Few-shot = you include a handful of input->output EXAMPLES in the prompt before
 the real input. The model infers the pattern (the task, the format, the tone,

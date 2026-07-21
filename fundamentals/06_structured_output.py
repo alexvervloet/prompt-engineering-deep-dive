@@ -1,6 +1,5 @@
 """
 06 - STRUCTURED OUTPUT (JSON)
-=============================
 
 When a program -- not a human -- consumes the model's reply, you want machine-
 readable output (usually JSON) with a guaranteed shape. Free-form prose is hard
@@ -106,7 +105,7 @@ if __name__ == "__main__":
     print("\nSource email:\n", EMAIL)
 
     rule()
-    print("\n[json=True — forced JSON object] ->")
+    print("\n[json=True, forced JSON object] ->")
     raw = ask_for_json()
     print(raw)
 

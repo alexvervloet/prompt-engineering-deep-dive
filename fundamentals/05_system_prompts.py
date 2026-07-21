@@ -1,6 +1,5 @@
 """
 05 - SYSTEM PROMPTS
-===================
 
 The SYSTEM message sets durable, global behavior for the whole conversation:
 the persona, rules, constraints, output format, and what to do at the edges.

@@ -1,6 +1,5 @@
 """
 EXAMPLE 4 - CONSTRAINED SUMMARIZATION
-=====================================
 
 USE CASE: summarize a long document for a SPECIFIC audience and purpose, under
 hard constraints (length, focus, format) -- e.g. an exec TL;DR of a postmortem.
