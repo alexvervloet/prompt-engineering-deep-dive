@@ -1,11 +1,10 @@
 """
-Setup check — run this first.
-=============================
+Setup check: run this first.
 
     secrun python check_setup.py
 
 Checks your Python version, the installed packages, your chosen PROVIDER, and the
-API key that provider needs — and tells you exactly what to fix. Makes NO API
+API key that provider needs, and tells you exactly what to fix. Makes NO API
 calls, so it costs nothing. Uses only the standard library, so it runs even before
 `pip install` and can report missing dependencies instead of crashing.
 """
@@ -75,7 +74,7 @@ def check_python():
     if (major, minor) >= (3, 10):
         ok(f"Python {major}.{minor} (3.10+ required)")
         return True
-    fail(f"Python {major}.{minor} — this repo needs Python 3.10 or newer.")
+    fail(f"Python {major}.{minor}: this repo needs Python 3.10 or newer.")
     print("    Install a newer Python from https://www.python.org/downloads/")
     return False
 
@@ -97,9 +96,9 @@ def check_dependencies(provider):
     missing = []
     for import_name, pip_name, purpose in needed:
         if importlib.util.find_spec(import_name) is not None:
-            ok(f"{pip_name} — {purpose}")
+            ok(f"{pip_name}: {purpose}")
         else:
-            fail(f"{pip_name} MISSING — {purpose}")
+            fail(f"{pip_name} MISSING: {purpose}")
             missing.append(pip_name)
     if missing:
         print("\n    Install everything with:")
@@ -113,17 +112,17 @@ def check_keys(env, provider):
         fail(".env file not found.")
         print("    Create it with:  cp .env.example .env")
         return False
-    # A local OpenAI-compatible server needs no real key — flag, don't fail.
+    # A local OpenAI-compatible server needs no real key, so flag, don't fail.
     base_url = _get(env, "OPENAI_BASE_URL")
     if provider == "openai" and base_url:
-        ok(f"OPENAI_BASE_URL set ({base_url}) — local server; any non-empty key works.")
+        ok(f"OPENAI_BASE_URL set ({base_url}): local server; any non-empty key works.")
         return True
     all_ok = True
     for name, prefix, placeholder in PROVIDER_KEYS.get(provider, []):
         value = _get(env, name)
         if not value or value == placeholder:
             fail(f"{name} is not set.")
-            print("    Store it in your OS keychain and run `secrun python check_setup.py` — see SECRETS.md.")
+            print("    Store it in your OS keychain and run `secrun python check_setup.py` . See SECRETS.md.")
             all_ok = False
         elif prefix and not value.startswith(prefix):
             warn(f"{name} is set but doesn't start with '{prefix}'. Double-check it.")
@@ -147,9 +146,9 @@ def main():
     if py and deps and keys:
         print(_c("All set! 🎉", "1;32"))
         print("Start here:  secrun python fundamentals/01_zero_shot.py")
-        print("(Every lesson makes a small, real API call — there's no offline mode.)")
+        print("(Every lesson makes a small, real API call; there's no offline mode.)")
         return 0
-    print(_c("Not ready yet — fix the ✗ items above, then run this again.", "1;31"))
+    print(_c("Not ready yet. Fix the ✗ items above, then run this again.", "1;31"))
     return 1
 
 
