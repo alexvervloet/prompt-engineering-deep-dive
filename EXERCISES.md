@@ -1,22 +1,22 @@
-# Exercises — make the learning stick
+# Exercises: make the learning stick
 
 Reading code teaches you less than *predicting* what it will do and then checking.
 This file turns each lesson of the [README](README.md) into a few quick
 active-recall prompts.
 
 How to use it: work the lesson first, then come back. **Commit to an answer before
-you run or reveal** — the prediction is where the learning happens, even
+you run or reveal.** The prediction is where the learning happens, even
 (especially) when you're wrong. Answers are hidden behind ▸ toggles.
 
 > Every lesson here makes a small, real API call (against your `PROVIDER`, or a
-> free local model). There's no offline mode — the point is to *watch* prompts
+> free local model). There's no offline mode; the point is to *watch* prompts
 > change behavior.
 
 ---
 
 ## Fundamentals
 
-### 01 — Zero-shot
+### 01: Zero-shot
 
 **Predict.** Same model, same review. The vague prompt asks "what do you think of
 this review?"; the tuned one says "Respond with exactly one word: Positive,
@@ -31,7 +31,7 @@ Clarity beats cleverness, and "state the output format" is the cheapest win in t
 whole repo.
 </details>
 
-### 02 — Few-shot
+### 02: Few-shot
 
 **Recall.** You want the model to emit `billing|high` (a format it would never
 produce on its own). Cheaper to write a paragraph of rules, or show three
@@ -41,10 +41,10 @@ examples? What two things do the examples teach at once?
 
 Show examples. 2–5 demonstrations teach the *format* (`category|priority`) **and**
 your *conventions* (what counts as "high") far more cheaply than a rulebook. Keep
-the formatting identical across examples — the model copies what it sees.
+the formatting identical across examples; the model copies what it sees.
 </details>
 
-### 03 — Chain-of-thought
+### 03: Chain-of-thought
 
 **Predict.** On a multi-step word problem, does "think step by step" help more on
 an easy arithmetic question or a multi-constraint one? What's the cost you pay for
@@ -53,11 +53,11 @@ the accuracy?
 <details><summary>▸ Answer</summary>
 
 It helps most on multi-step problems, where one-shot answers skip a step. The cost
-is tokens (and latency) for the reasoning — and on a *reasoning* model it can even
+is tokens (and latency) for the reasoning, and on a *reasoning* model it can even
 hurt (lesson 14). Give room to think where the task needs it, not everywhere.
 </details>
 
-### 04 — Role prompting
+### 04: Role prompting
 
 **Recall.** "You are a patient kindergarten teacher" vs. "You are a terse senior
 SRE." Name two things the role changes about the answer beyond vocabulary.
@@ -69,9 +69,9 @@ A role is a compact way to set audience + expertise without spelling out a dozen
 style rules.
 </details>
 
-### 05 — System prompts
+### 05: System prompts
 
-**Recall.** What belongs in the system prompt vs. the user message — and why is the
+**Recall.** What belongs in the system prompt vs. the user message, and why is the
 system prompt called "your most powerful lever"?
 
 <details><summary>▸ Answer</summary>
@@ -81,7 +81,7 @@ the specific input goes in the user turn. It's set once and steers every turn, s
 single good system prompt fixes a whole class of outputs.
 </details>
 
-### 06 — Structured output
+### 06: Structured output
 
 **Predict.** Three levels: ask for JSON, `json=True`, and `structured(schema=...)`.
 Which guarantees valid JSON *syntax*, and which guarantees your exact *fields and
@@ -92,10 +92,10 @@ types*? Why still wrap `json.loads` in try/except?
 `json=True` forces valid JSON syntax (response_format on OpenAI, an assistant
 prefill on Claude); `structured()` forces the schema (strict `json_schema` on
 OpenAI, a forced tool call on Claude). You still parse defensively because a local
-model — or any future change — can surprise you; never trust bytes blindly.
+model: or any future change, can surprise you; never trust bytes blindly.
 </details>
 
-### 07 — Delimiters & grounding
+### 07: Delimiters & grounding
 
 **Recall.** Why wrap the document in triple quotes and say "answer only from the
 text between them"? What attack does this start to defend against?
@@ -103,11 +103,11 @@ text between them"? What attack does this start to defend against?
 <details><summary>▸ Answer</summary>
 
 It separates *instructions* from *data* so the model doesn't treat the document's
-contents as commands — the first, weakest line of defense against prompt injection
+contents as commands, the first and weakest line of defense against prompt injection
 (see the Prompt Injection deep dive for why it's necessary but not sufficient).
 </details>
 
-### 08 — Prompt chaining
+### 08: Prompt chaining
 
 **Predict.** One prompt does "summarize, critique, and rewrite" in a single shot;
 a chain does each as its own call. Which produces a better final draft, and what
@@ -120,7 +120,7 @@ can inspect/validate between steps. The cost is more calls (more tokens, more
 latency). Decompose when one mega-prompt is juggling too much.
 </details>
 
-### 09 — Self-consistency
+### 09: Self-consistency
 
 **Predict.** You sample the same problem five times at temperature 0.8 and take the
 majority vote. Why must temperature be > 0, and on what kind of task does voting
@@ -130,11 +130,11 @@ help most?
 
 At temperature 0 the samples are (near) identical, so there's nothing to vote
 over. Voting helps on problems with one correct answer but many reasoning paths
-(math, a single extracted fact) — the wrong paths scatter, the right one clusters.
+(math, a single extracted fact): the wrong paths scatter, the right one clusters.
 It costs N× the tokens, so spend it where correctness matters.
 </details>
 
-### 10 — Decoding parameters
+### 10: Decoding parameters
 
 **Recall.** Match the task to temperature: extraction, brainstorming, code edits.
 Which knob bounds cost and which is OpenAI-only?
@@ -146,10 +146,10 @@ cost/latency. `seed` (reproducible sampling) is OpenAI-only; Claude's temperatur
 range is 0–1 (not 0–2). Tune temperature *or* top_p, not both.
 </details>
 
-### 11 — ReAct
+### 11: ReAct
 
 **Predict.** The loop sets `stop=["Observation:"]`. What breaks if you remove that
-stop sequence? Who actually runs the tool — the model or your code?
+stop sequence? Who actually runs the tool, the model or your code?
 
 <details><summary>▸ Answer</summary>
 
@@ -159,7 +159,7 @@ hallucinated data. The stop hands control back to your code at the right moment;
 real tool use / agents work.
 </details>
 
-### 12 — Reflexion
+### 12: Reflexion
 
 **Recall.** How is Reflexion stronger than plain "critique your answer"? What makes
 the feedback trustworthy?
@@ -171,7 +171,7 @@ the model's opinion of its own work. Attempt → verify → reflect on the actua
 failure → retry. Feedback grounded in reality beats self-graded vibes.
 </details>
 
-### 13 — Meta-prompting
+### 13: Meta-prompting
 
 **Do.** Take your weakest prompt from a real project, paste it into the
 meta-prompting lesson's pattern, and ask the model to rewrite it. Did it add a
@@ -179,19 +179,19 @@ role, a format, or a fallback you'd omitted?
 
 <details><summary>▸ Answer</summary>
 
-Usually all three — the model is good at spotting the missing "what does good look
+Usually all three. The model is good at spotting the missing "what does good look
 like?" scaffolding. Meta-prompting is a fast first draft; you still measure the
 result (the capstone) rather than assume the rewrite is better.
 </details>
 
-### 14 — Reasoning models
+### 14: Reasoning models
 
 **Predict.** On a reasoning model (o-series, Claude thinking), does adding "think
 step by step" and worked examples help or hurt? How do you control depth instead?
 
 <details><summary>▸ Answer</summary>
 
-It often *hurts* — the model already reasons internally, so the scaffolding is
+It often *hurts*. The model already reasons internally, so the scaffolding is
 redundant and can box in its process. Give the goal + constraints + "what good
 looks like," then control depth with the model's effort/reasoning setting, not a
 longer prompt.
@@ -199,7 +199,7 @@ longer prompt.
 
 ---
 
-## Use-case examples — naive vs optimized
+## Use-case examples: naive vs optimized
 
 Each `examples/*.py` shows a weak prompt next to a tuned one for a real task. The
 recall prompt is the same every time, because the *method* is: **name the specific
@@ -211,7 +211,7 @@ keep the reply on-policy and on-brand.
 <details><summary>▸ Answer</summary>
 
 A system prompt with policy constraints + tone, and an explicit fallback for "I
-can't do that" cases — so the model refuses gracefully instead of improvising a
+can't do that" cases, so the model refuses gracefully instead of improvising a
 promise the business can't keep.
 </details>
 
@@ -227,7 +227,7 @@ emitting a confident-looking wrong answer your code then trusts.
 </details>
 
 **Recall (summarization `04`, code review `03`, text-to-SQL `05`).** Pick one.
-Which single prompt ingredient most changes its output quality — audience, rubric,
+Which single prompt ingredient most changes its output quality: audience, rubric,
 or schema grounding?
 
 <details><summary>▸ Answer</summary>
@@ -240,7 +240,7 @@ Each is the "context/constraints" rung of the mental model doing the heavy lifti
 
 ---
 
-## Capstone — `optimize.py`
+## Capstone: `optimize.py`
 
 **Predict.** You run `secrun python hands_on/optimize.py`. The tuned sentiment prompt
 *reads* far better than the naive one. Does that guarantee it scores higher? What
@@ -248,28 +248,28 @@ would make you *not* ship it?
 
 <details><summary>▸ Answer</summary>
 
-No — a nicer-reading prompt can score the same or worse on real cases. You ship it
+No. A nicer-reading prompt can score the same or worse on real cases. You ship it
 only if its accuracy actually beats the baseline on the labeled set; a tie or a
 regression means keep iterating. "Reads better" is a hypothesis; the score is the
 test.
 </details>
 
-**Do.** Add two hard cases to a built-in task (edit `SENTIMENT.cases`) — say a
-sarcastic review and a backhanded compliment — and rerun with `--show-misses`.
+**Do.** Add two hard cases to a built-in task (edit `SENTIMENT.cases`), say a
+sarcastic review and a backhanded compliment, then rerun with `--show-misses`.
 Which prompt cracks under the harder set?
 
 <details><summary>▸ Answer</summary>
 
 Often the naive prompt's accuracy falls fastest, because the tuned prompt's "use
 Mixed when there's both praise and complaint" rule was written for exactly those
-edge cases. Hard cases are where prompt quality separates — which is why a good
+edge cases. Hard cases are where prompt quality separates, which is why a good
 test set is mostly edge cases.
 </details>
 
 **Stretch.** Write your own task: a `cases.jsonl` of `{"text","expected"}` rows and
 two prompt files, then run `optimize.py --prompt-a naive.txt --prompt-b tuned.txt
 --data cases.jsonl`. The first time it tells you your "better" prompt was actually
-worse, the discipline has clicked — and you're ready for the
+worse, the discipline has clicked, and you're ready for the
 [Evals deep dive](https://github.com/alexvervloet/evals-deep-dive), which is this idea at
 full scale.
 
