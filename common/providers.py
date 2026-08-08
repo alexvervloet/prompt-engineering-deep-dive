@@ -147,7 +147,11 @@ def chat(
         params: dict = {}
         if json:
             params["response_format"] = {"type": "json_object"}
-        if stop:
+        if stop and not (model or chat_model()).startswith("gpt-5"):
+            # The gpt-5 line dropped `stop` entirely. Sending it is a 400, so on
+            # those models we simply don't pass it; lessons that pass `stop` get
+            # an unbounded answer rather than an error. See the OpenAI dive's
+            # examples/06 for what replaced it.
             params["stop"] = stop
         resp = _openai_client().chat.completions.create(
             model=model or chat_model(),
