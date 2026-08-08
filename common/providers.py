@@ -43,7 +43,7 @@ from dotenv import load_dotenv
 # Load `.env` once, when this module is first imported (never commit `.env`).
 load_dotenv()
 
-_OPENAI_CHAT = "gpt-4o-mini"
+_OPENAI_CHAT = "gpt-5.4-nano"
 _CLAUDE_CHAT = "claude-haiku-4-5"
 
 _KEYS = {
@@ -153,7 +153,7 @@ def chat(
             model=model or chat_model(),
             messages=messages,  # type: ignore[arg-type]
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             **params,
         )
         return resp.choices[0].message.content or ""
@@ -197,7 +197,7 @@ def chat_stream(
             model=model or chat_model(),
             messages=messages,  # type: ignore[arg-type]
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             stream=True,
         )
         for chunk in stream:
@@ -247,7 +247,7 @@ def structured(
             model=model or chat_model(),
             messages=messages,  # type: ignore[arg-type]
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             response_format={
                 "type": "json_schema",
                 "json_schema": {"name": name, "schema": schema, "strict": True},
