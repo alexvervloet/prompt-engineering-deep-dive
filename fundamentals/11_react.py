@@ -1,10 +1,11 @@
 """
-11 - ReAct (REASON + ACT)
+11 - CLASSIC TEXT ReAct (REASON + ACT)
 
 ReAct interleaves *reasoning* and *acting*: instead of answering in one shot, the
 model alternates Thought -> Action -> Observation until it has enough to answer.
-It's the prompting pattern under most "agents", and you can do it with nothing but
-a prompt and a parse loop, which is exactly what this file shows.
+It is an important historical prompting pattern, and you can do it with nothing
+but a prompt and a parse loop, which is exactly what this file shows. Production
+agents now normally use native, schema-validated tool calling instead.
 
 The loop, driven entirely by prompting:
   1. You describe the available ACTIONS (tools) and the strict output format.
@@ -15,8 +16,9 @@ The loop, driven entirely by prompting:
 KEY IDEAS
   - The model can't actually *do* anything. It emits a request to act, you act,
     you hand back the result. Same control split as real tool use.
-  - A `stop` sequence ("Observation:") is what hands control back to your code at
-    the right moment; without it the model hallucinates its own observations.
+  - This classic loop requires a model that supports the `stop` sequence
+    ("Observation:"). GPT-5 does not, so the OpenAI path intentionally pins
+    `gpt-4o-mini` unless you set `REACT_MODEL` yourself.
   - Grounding each step in a real Observation is what stops the model from making
     up facts: it reasons over data it actually fetched, not its memory.
   - The `tool[input]` regex only enforces the outer syntax. It does NOT validate
@@ -35,7 +37,16 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import re
 
-from common import chat, header, rule
+from common import chat, chat_model, header, provider_name, rule
+
+# Do not silently drop the control boundary. Hosted OpenAI's GPT-5 line has no
+# stop parameter, so use a compatible model for this historical text protocol.
+# Local OpenAI-compatible servers keep their configured MODEL.
+REACT_MODEL = os.getenv("REACT_MODEL") or (
+    "gpt-4o-mini"
+    if provider_name() == "openai" and not os.getenv("OPENAI_BASE_URL")
+    else chat_model()
+)
 
 # --- The "tools" the model may ask us to run. Real apps hit APIs/DBs; we fake
 # them so the example is self-contained and free of dependencies. ---
@@ -85,6 +96,7 @@ def react(question: str, max_steps: int = 5) -> str:
                 {"role": "system", "content": SYSTEM},
                 {"role": "user", "content": transcript},
             ],
+            model=REACT_MODEL,
             temperature=0,
             stop=["Observation:"],
         ).strip()
@@ -107,7 +119,8 @@ def react(question: str, max_steps: int = 5) -> str:
 
 
 if __name__ == "__main__":
-    header("ReAct: REASON + ACT")
+    header("CLASSIC TEXT ReAct: REASON + ACT")
+    print(f"\nStop-compatible model: {REACT_MODEL}")
     question = (
         "How many meters taller is the Eiffel Tower than a 100-meter building, doubled?"
     )
@@ -119,6 +132,6 @@ if __name__ == "__main__":
     print(
         "\nTakeaway: 'agents' are mostly this loop. The model proposes an action,\n"
         "your code runs it and returns the result, and a stop sequence hands control\n"
-        "back at the right moment. Reasoning grounded in real observations beats\n"
-        "reasoning from memory."
+        "back at the right moment. For production, prefer native tool calling: it\n"
+        "provides schema-validated arguments without a fragile text parser."
     )
