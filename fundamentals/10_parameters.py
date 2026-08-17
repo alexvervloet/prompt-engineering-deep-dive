@@ -23,8 +23,12 @@ RULES OF THUMB
 PROVIDER NOTE
   - temperature range is 0-2 on OpenAI but 0-1 on Claude; `common.chat` clamps
     for you, so the calls below behave on either stack.
+  - GPT-5.6 does not accept temperature/top_p. This sampling lesson therefore
+    uses the repo's default gpt-5.4-nano on OpenAI; if MODEL points at GPT-5.6,
+    the provider wrapper raises a clear error instead of dropping the knob.
   - `seed` is an OpenAI feature (reproducible sampling); Claude has no seed. The
-    runnable calls here use only temperature + max_tokens, so they work on both.
+    runnable calls here use only temperature + max_tokens, so they work on both
+    default stacks.
 
 Run:  secrun python fundamentals/10_parameters.py
 """
