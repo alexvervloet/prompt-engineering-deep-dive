@@ -14,11 +14,15 @@ The shift in how you prompt:
   - Few-shot examples help LESS, and over-specified steps can lower quality.
   - Control depth with the model's effort/reasoning setting, not with prompt verbosity.
 
-This file runs the SAME hard problem two ways against your configured model and
-prints both, so you can compare. (You don't need an actual reasoning model to see
-the contrast in *prompting style*; set MODEL/REASONING_MODEL in .env to try a real
-one. On a normal model the verbose version often wins; on a reasoning model the
-minimal version usually matches or beats it with fewer tokens.)
+This file runs the SAME hard problem two ways at the SAME explicit reasoning
+effort, so the prompt is the only treatment that changes. On OpenAI this uses
+the Responses API's `reasoning.effort`; on recent Claude models it uses adaptive
+thinking plus `output_config.effort`. No sampling temperature is sent.
+
+The OpenAI default model supports this directly. On the Claude stack, the repo's
+cheap Haiku default has no adaptive effort control, so set for example:
+
+    REASONING_MODEL=claude-sonnet-4-6
 
 Run:  secrun python fundamentals/14_reasoning_models.py
 """
@@ -32,6 +36,7 @@ from common import chat, chat_model, header, rule
 
 # A model may have a dedicated reasoning model configured; fall back to the default.
 REASONING_MODEL = os.getenv("REASONING_MODEL", chat_model())
+REASONING_EFFORT = os.getenv("REASONING_EFFORT", "medium")
 
 PROBLEM = (
     "Five houses in a row, each a different color, owner, and pet. "
@@ -62,13 +67,17 @@ MINIMAL = (
 if __name__ == "__main__":
     header("PROMPTING REASONING MODELS: LESS IS MORE")
     print(f"\nModel in use: {REASONING_MODEL}")
+    print(f"Reasoning effort: {REASONING_EFFORT}")
     print(f"\nProblem:\n{PROBLEM}\n")
 
     rule()
     print("\n[Style A, verbose 'think step by step' scaffolding] ->")
     print(
         chat(
-            [{"role": "user", "content": VERBOSE}], model=REASONING_MODEL, temperature=0
+            [{"role": "user", "content": VERBOSE}],
+            model=REASONING_MODEL,
+            temperature=None,
+            reasoning_effort=REASONING_EFFORT,
         )
     )
 
@@ -76,7 +85,10 @@ if __name__ == "__main__":
     print("\n[Style B, goal + constraints only, no scaffolding] ->")
     print(
         chat(
-            [{"role": "user", "content": MINIMAL}], model=REASONING_MODEL, temperature=0
+            [{"role": "user", "content": MINIMAL}],
+            model=REASONING_MODEL,
+            temperature=None,
+            reasoning_effort=REASONING_EFFORT,
         )
     )
 
