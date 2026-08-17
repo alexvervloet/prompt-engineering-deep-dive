@@ -30,7 +30,9 @@ The provider differences this file quietly absorbs:
     Claude; `chat(..., json=True)` does the right one.
   - A strict JSON *schema* is `json_schema` on OpenAI and a forced *tool call* on
     Claude; `structured()` does the right one.
-  - `stop` strings are `stop` on OpenAI and `stop_sequences` on Claude.
+  - `stop` strings are `stop` on compatible OpenAI models and `stop_sequences`
+    on Claude. Unsupported GPT-5 combinations fail loudly; nothing is dropped.
+  - `reasoning_effort` uses OpenAI's Responses API or Claude adaptive thinking.
 """
 
 import json as _json
@@ -125,38 +127,82 @@ def _split_system(messages: list[dict]) -> tuple[str, list[dict]]:
     return "\n\n".join(system_parts), convo
 
 
+def _openai_model_rejects_temperature(model: str) -> bool:
+    """GPT-5.6 controls depth with reasoning effort, not sampling knobs."""
+    return model.startswith("gpt-5.6")
+
+
+def _validate_openai_controls(
+    model: str,
+    *,
+    temperature: float | None,
+    stop: list[str] | None = None,
+) -> None:
+    """Reject known-incompatible controls before a confusing remote 400."""
+    if temperature is not None and _openai_model_rejects_temperature(model):
+        raise ValueError(
+            f"{model} does not accept temperature. Pass temperature=None and, "
+            "for reasoning work, set reasoning_effort instead."
+        )
+    if stop and model.startswith("gpt-5"):
+        raise ValueError(
+            f"{model} does not support stop sequences. Use a stop-compatible "
+            "model for classic text ReAct, or use native tool calling / structured outputs."
+        )
+
+
 def chat(
     messages: list[dict],
     *,
     model: str | None = None,
-    temperature: float = 0.7,
+    temperature: float | None = None,
     max_tokens: int = 2048,
     json: bool = False,
     stop: list[str] | None = None,
+    reasoning_effort: str | None = None,
 ) -> str:
     """Send a list of {"role", "content"} messages; return the assistant's text.
 
-    `json=True` asks the provider for a valid JSON object (response_format on
-    OpenAI, an assistant prefill on Claude). `stop` ends generation when any of
-    the given strings would appear. Everything else is the same on both stacks.
+    `json=True` asks the provider for a valid JSON object. `stop` ends generation
+    on models that support it. `reasoning_effort` deliberately selects a
+    reasoning-capable request path; it is never simulated or silently ignored.
     """
     ensure_ready()
     p = provider_name()
 
     if p == "openai":
+        selected_model = model or chat_model()
+        _validate_openai_controls(
+            selected_model, temperature=temperature, stop=stop
+        )
+        if reasoning_effort is not None:
+            if temperature is not None or stop or json:
+                raise ValueError(
+                    "reasoning_effort cannot be combined here with temperature, "
+                    "stop, or json; keep the reasoning request minimal."
+                )
+            system, convo = _split_system(messages)
+            params: dict = {
+                "model": selected_model,
+                "input": convo,
+                "max_output_tokens": max_tokens,
+                "reasoning": {"effort": reasoning_effort},
+            }
+            if system:
+                params["instructions"] = system
+            response = _openai_client().responses.create(**params)
+            return response.output_text
+
         params: dict = {}
+        if temperature is not None:
+            params["temperature"] = temperature
         if json:
             params["response_format"] = {"type": "json_object"}
-        if stop and not (model or chat_model()).startswith("gpt-5"):
-            # The gpt-5 line dropped `stop` entirely. Sending it is a 400, so on
-            # those models we simply don't pass it; lessons that pass `stop` get
-            # an unbounded answer rather than an error. See the OpenAI dive's
-            # examples/06 for what replaced it.
+        if stop:
             params["stop"] = stop
         resp = _openai_client().chat.completions.create(
-            model=model or chat_model(),
+            model=selected_model,
             messages=messages,  # type: ignore[arg-type]
-            temperature=temperature,
             max_completion_tokens=max_tokens,
             **params,
         )
@@ -164,18 +210,39 @@ def chat(
 
     if p == "claude":
         system, convo = _split_system(messages)
-        # Claude's temperature range is 0.0–1.0 (not 0–2); clamp so shared lessons
-        # that nudge it higher don't error on the Claude stack.
-        params = {"temperature": min(temperature, 1.0), "max_tokens": max_tokens}
+        selected_model = model or chat_model()
+        params: dict = {"max_tokens": max_tokens}
+        if temperature is not None:
+            # Claude's range is 0.0-1.0 (not 0-2).
+            params["temperature"] = min(temperature, 1.0)
         if system:
             params["system"] = system
         if stop:
             params["stop_sequences"] = stop
         if json:
+            if reasoning_effort is not None:
+                raise ValueError(
+                    "Claude reasoning_effort cannot be combined with the JSON "
+                    "assistant-prefill path; use structured() instead."
+                )
             # Prefill an opening brace so the model must continue a JSON object.
             convo = convo + [{"role": "assistant", "content": "{"}]
+        if reasoning_effort is not None:
+            if selected_model == "claude-haiku-4-5":
+                raise ValueError(
+                    "claude-haiku-4-5 has no adaptive effort control. Set "
+                    "REASONING_MODEL to a recent reasoning model such as "
+                    "claude-sonnet-4-6."
+                )
+            if temperature is not None:
+                raise ValueError(
+                    "Claude adaptive thinking cannot be combined with temperature; "
+                    "pass temperature=None."
+                )
+            params["thinking"] = {"type": "adaptive"}
+            params["output_config"] = {"effort": reasoning_effort}
         resp = _anthropic_client().messages.create(
-            model=model or chat_model(),
+            model=selected_model,
             messages=convo,  # type: ignore[arg-type]
             **params,
         )
@@ -189,7 +256,7 @@ def chat_stream(
     messages: list[dict],
     *,
     model: str | None = None,
-    temperature: float = 0.7,
+    temperature: float | None = None,
     max_tokens: int = 2048,
 ):
     """Yield the reply in chunks as it's generated, for a live, typewriter feel."""
@@ -197,12 +264,17 @@ def chat_stream(
     p = provider_name()
 
     if p == "openai":
+        selected_model = model or chat_model()
+        _validate_openai_controls(selected_model, temperature=temperature)
+        params: dict = {}
+        if temperature is not None:
+            params["temperature"] = temperature
         stream = _openai_client().chat.completions.create(  # type: ignore[call-overload]
-            model=model or chat_model(),
+            model=selected_model,
             messages=messages,  # type: ignore[arg-type]
-            temperature=temperature,
             max_completion_tokens=max_tokens,
             stream=True,
+            **params,
         )
         for chunk in stream:
             delta = chunk.choices[0].delta.content
@@ -212,7 +284,9 @@ def chat_stream(
 
     if p == "claude":
         system, convo = _split_system(messages)
-        params: dict = {"temperature": min(temperature, 1.0), "max_tokens": max_tokens}
+        params: dict = {"max_tokens": max_tokens}
+        if temperature is not None:
+            params["temperature"] = min(temperature, 1.0)
         if system:
             params["system"] = system
         with _anthropic_client().messages.stream(
@@ -233,7 +307,7 @@ def structured(
     *,
     name: str = "result",
     model: str | None = None,
-    temperature: float = 0.0,
+    temperature: float | None = None,
     max_tokens: int = 2048,
 ) -> str:
     """Force the reply to match a JSON Schema; return it as a JSON string.
@@ -247,21 +321,28 @@ def structured(
     p = provider_name()
 
     if p == "openai":
+        selected_model = model or chat_model()
+        _validate_openai_controls(selected_model, temperature=temperature)
+        params: dict = {}
+        if temperature is not None:
+            params["temperature"] = temperature
         resp = _openai_client().chat.completions.create(
-            model=model or chat_model(),
+            model=selected_model,
             messages=messages,  # type: ignore[arg-type]
-            temperature=temperature,
             max_completion_tokens=max_tokens,
             response_format={
                 "type": "json_schema",
                 "json_schema": {"name": name, "schema": schema, "strict": True},
             },
+            **params,
         )
         return resp.choices[0].message.content or ""
 
     if p == "claude":
         system, convo = _split_system(messages)
-        params: dict = {"temperature": min(temperature, 1.0), "max_tokens": max_tokens}
+        params: dict = {"max_tokens": max_tokens}
+        if temperature is not None:
+            params["temperature"] = min(temperature, 1.0)
         if system:
             params["system"] = system
         resp = _anthropic_client().messages.create(  # type: ignore[call-overload]
