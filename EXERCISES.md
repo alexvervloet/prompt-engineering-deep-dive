@@ -143,7 +143,8 @@ Which knob bounds cost and which is OpenAI-only?
 
 Extraction/code → temperature 0; brainstorming → 0.7–1.0. `max_tokens` bounds
 cost/latency. `seed` (reproducible sampling) is OpenAI-only; Claude's temperature
-range is 0–1 (not 0–2). Tune temperature *or* top_p, not both.
+range is 0–1 (not 0–2). Tune temperature *or* top_p, not both. These are
+sampling-model controls: GPT-5.6 rejects them and uses explicit reasoning effort.
 </details>
 
 ### 11: ReAct
@@ -156,7 +157,9 @@ stop sequence? Who actually runs the tool, the model or your code?
 Without the stop, the model writes its *own* fake `Observation:` and reasons over
 hallucinated data. The stop hands control back to your code at the right moment;
 *you* run the tool and feed the real result back. That control split is exactly how
-real tool use / agents work.
+real tool use / agents work. Because GPT-5 does not support `stop`, this historical
+text lesson pins `gpt-4o-mini` on hosted OpenAI. Production code should use native,
+schema-validated tool calls instead of parsing `tool[input]` text.
 </details>
 
 ### 12: Reflexion
@@ -194,7 +197,8 @@ step by step" and worked examples help or hurt? How do you control depth instead
 It often *hurts*. The model already reasons internally, so the scaffolding is
 redundant and can box in its process. Give the goal + constraints + "what good
 looks like," then control depth with the model's effort/reasoning setting, not a
-longer prompt.
+longer prompt. The example holds effort constant across both prompts so it does
+not confound prompt style with inference compute.
 </details>
 
 ---
