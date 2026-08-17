@@ -92,8 +92,8 @@ secrun python fundamentals/01_zero_shot.py
 | [07_delimiters_and_context.py](fundamentals/07_delimiters_and_context.py) | Delimiters & grounding | Separate instructions from data; answer only from context. |
 | [08_prompt_chaining.py](fundamentals/08_prompt_chaining.py) | Prompt chaining | Decompose into a pipeline; generate→critique→revise. |
 | [09_self_consistency.py](fundamentals/09_self_consistency.py) | Self-consistency | Sample N times and majority-vote for accuracy. |
-| [10_parameters.py](fundamentals/10_parameters.py) | Decoding params | temperature, top_p, max_tokens, seed, stop. |
-| [11_react.py](fundamentals/11_react.py) | ReAct | Interleave Thought→Action→Observation; the pattern under "agents". |
+| [10_parameters.py](fundamentals/10_parameters.py) | Decoding params | Sampling-model controls; GPT-5.6 uses reasoning effort instead. |
+| [11_react.py](fundamentals/11_react.py) | Classic text ReAct | Thought→Action→Observation with a stop-compatible model; prefer native tools in production. |
 | [12_reflexion.py](fundamentals/12_reflexion.py) | Reflexion | Attempt→verify→reflect→retry against a real check, not vibes. |
 | [13_meta_prompting.py](fundamentals/13_meta_prompting.py) | Meta-prompting | Use the model to rewrite a weak prompt into a strong one. |
 | [14_reasoning_models.py](fundamentals/14_reasoning_models.py) | Reasoning models | Drop the "think step by step" scaffolding; give goal + constraints. |
@@ -139,8 +139,9 @@ General heuristics:
 - **Give room to think** on hard problems; **hide the reasoning** if the end user
   doesn't need it.
 - **Constrain the output** when code will parse it, and still parse defensively.
-- **Match temperature to the task:** `0` for extraction/classification/code,
-  higher for creative work.
+- **Match temperature to the task** on models that support sampling controls:
+  `0` for extraction/classification/code, higher for creative work. On GPT-5.6,
+  omit temperature and set reasoning effort intentionally.
 - **Iterate.** Prompt engineering is empirical: change one thing, observe, repeat.
 
 ---
@@ -189,8 +190,8 @@ You've learned to shape a single call. The series builds outward from here:
   the right text and put it in the context. → [RAG](https://github.com/alexvervloet/rag-deep-dive)
 - **Measure it at scale**: the capstone is a tiny eval; the real discipline (judges,
   metrics, significance, CI gates) is its own dive. → [Evals](https://github.com/alexvervloet/evals-deep-dive)
-- **Let it act**: ReAct (lesson 11) by hand is the seed of an agent loop with real
-  tools. → [Agents](https://github.com/alexvervloet/agents-deep-dive)
+- **Let it act**: classic text ReAct (lesson 11) exposes the loop; production
+  agents use native, schema-validated tools. → [Agents](https://github.com/alexvervloet/agents-deep-dive)
 - **Harden it**: delimiters (lesson 07) are the first, weakest injection defense;
   the real defense-in-depth is its own dive. → [Prompt Injection & Guardrails](https://github.com/alexvervloet/prompt-injection-deep-dive)
 - **Reasoning models**: lesson 14 is the start; prompting o-series / extended
