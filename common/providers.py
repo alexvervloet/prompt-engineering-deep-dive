@@ -23,7 +23,7 @@ What this module exposes:
   - structured(messages, schema) -> JSON forced to match a schema
   - provider_name / chat_model / describe / ensure_ready  (small helpers)
 
-The provider differences this file quietly absorbs:
+The provider differences this file absorbs for you:
   - Claude takes the system prompt as a separate `system=` argument, not a
     message with role "system"; we split it out for you.
   - "Give me JSON" is `response_format` on OpenAI and an assistant *prefill* on
