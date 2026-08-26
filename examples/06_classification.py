@@ -2,7 +2,7 @@
 EXAMPLE 6 - TEXT CLASSIFICATION (TICKET ROUTING)
 
 USE CASE: route incoming support tickets into a fixed set of categories so they
-reach the right team automatically. Classification is the workhorse of LLM apps 
+reach the right team automatically. Classification is the workhorse of LLM apps:
 moderation, intent detection, triage, tagging, and a few prompt choices make the
 difference between flaky labels and a reliable router.
 
