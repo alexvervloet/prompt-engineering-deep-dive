@@ -2,7 +2,7 @@
 common/providers.py: the ONLY file in this repo that talks to a model provider.
 
 Prompt engineering is provider-agnostic: a clearer prompt is a clearer prompt
-whether OpenAI or Claude serves it. So we hide the one provider-specific thing 
+whether OpenAI or Claude serves it. So we hide the one provider-specific thing,
 turning a list of messages into a reply, behind a few small functions, and every
 lesson stays focused on the *prompting*, not the plumbing.
 
