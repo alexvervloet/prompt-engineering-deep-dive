@@ -92,7 +92,7 @@ types*? Why still wrap `json.loads` in try/except?
 `json=True` forces valid JSON syntax (response_format on OpenAI, an assistant
 prefill on Claude); `structured()` forces the schema (strict `json_schema` on
 OpenAI, a forced tool call on Claude). You still parse defensively because a local
-model: or any future change, can surprise you; never trust bytes blindly.
+model, or any future change, can surprise you; never trust bytes blindly.
 </details>
 
 ### 07: Delimiters & grounding
