@@ -13,7 +13,7 @@ Use it when:
 KEY IDEAS
   - 2-5 examples is usually plenty; more isn't always better.
   - Make examples DIVERSE and cover edge cases (e.g. an ambiguous one).
-  - Keep formatting IDENTICAL across examples -- the model copies it.
+  - Keep formatting IDENTICAL across examples; the model copies it.
   - Balance your label distribution; don't make every example "Positive".
 
 Run:  secrun python fundamentals/02_few_shot.py
