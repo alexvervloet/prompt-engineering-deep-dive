@@ -3,7 +3,7 @@
 
 Hard tasks get more reliable when you BREAK them into a pipeline of smaller
 prompts, each doing one job and feeding the next. Each step is easy to test,
-debug, and swap out -- far better than one giant "do everything" prompt.
+debug, and swap out, far better than one giant "do everything" prompt.
 
 Example pipeline (turn a messy idea into a polished tweet):
   Step 1  EXTRACT  -> pull the key points from raw notes.
