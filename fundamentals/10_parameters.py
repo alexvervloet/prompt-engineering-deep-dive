@@ -1,18 +1,18 @@
 """
 10 - DECODING PARAMETERS (temperature, top_p, max_tokens, seed, stop)
 
-The prompt is only half the story -- the SAMPLING parameters control how the
+The prompt is only half the story; the SAMPLING parameters control how the
 model turns its probabilities into text. Same prompt + different params =
 different behavior.
 
 THE KNOBS
   - temperature (0-2): randomness. 0 = (near) deterministic, pick the most
     likely token. Higher = more diverse/creative (and more error-prone).
-  - top_p (0-1): nucleus sampling -- only consider the smallest set of tokens
+  - top_p (0-1): nucleus sampling: only consider the smallest set of tokens
     whose probabilities sum to top_p. Usually tune temperature OR top_p, not both.
   - max_tokens: hard cap on reply length (controls cost + runaway output).
   - seed: with temperature 0 + a fixed seed, many backends give reproducible
-    output -- invaluable for tests/evals.
+    output, invaluable for tests/evals.
   - stop: strings that end generation early (e.g. stop at "\n\n").
 
 RULES OF THUMB
