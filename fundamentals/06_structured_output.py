@@ -1,22 +1,22 @@
 """
 06 - STRUCTURED OUTPUT (JSON)
 
-When a program -- not a human -- consumes the model's reply, you want machine-
+When a program, not a human, consumes the model's reply, you want machine-
 readable output (usually JSON) with a guaranteed shape. Free-form prose is hard
 and brittle to parse.
 
 Three escalating levels of reliability:
   1. ASK for JSON in the prompt          (works, but can leak prose/markdown).
   2. json=True  (forces valid JSON syntax: response_format on OpenAI, an
-                 assistant prefill on Claude -- `common.chat` picks the right one).
+                 assistant prefill on Claude; `common.chat` picks the right one).
   3. JSON SCHEMA / structured outputs     (forces your exact fields & types:
-                 OpenAI's strict `json_schema`, or Claude's forced tool call --
+                 OpenAI's strict `json_schema`, or Claude's forced tool call;
                  `common.structured` picks the right one).
 
 KEY IDEAS
   - Describe each field and its type; give an example object.
   - Set temperature low (0) for deterministic, parseable output.
-  - ALWAYS wrap json.loads in try/except -- never trust the bytes blindly.
+  - ALWAYS wrap json.loads in try/except; never trust the bytes blindly.
   - Level 2 is the portable workhorse; level 3 is the strongest guarantee.
 
 Run:  secrun python fundamentals/06_structured_output.py
