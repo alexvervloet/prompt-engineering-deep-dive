@@ -27,8 +27,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from common import chat, header, rule
 
 # A 4-color combinatorics/probability problem with an "at least" condition.
-# Counting-based reasoning is a well-known weak spot for LLMs -- much more so
-# than straight arithmetic -- and this version needs the solver to enumerate
+# Counting-based reasoning is a well-known weak spot for LLMs, much more so
+# than straight arithmetic, and this version needs the solver to enumerate
 # every (color, count) case on their own (3/4/5 of red, 3/4 of blue, 3/4/5 of
 # green, 3 of yellow) and sum C(n, k) * C(others, 5-k) for each, with no
 # overlap to worry about since two colors can't each reach 3 within a 5-draw
