@@ -13,7 +13,7 @@ KEY IDEAS
   - The role usually lives in the SYSTEM message (see 05_system_prompts.py).
   - Specific roles beat generic ones: "kind kindergarten teacher" > "teacher".
   - Pair the persona with the audience: who is the answer FOR?
-  - Personas are steering, not magic credentials -- they don't make facts true.
+  - Personas are steering, not magic credentials; they don't make facts true.
 
 Run:  secrun python fundamentals/04_role_prompting.py
 """
