@@ -16,17 +16,17 @@ KEY IDEAS
   - Trade-off: more tokens + latency. For trivial tasks it's wasted cost.
   - For user-facing apps you often want the reasoning HIDDEN from the user.
     The GOTCHA: for a normal chat-completion model, "reasoning" only happens
-    in the tokens it emits -- there's no silent scratchpad. So telling the
+    in the tokens it emits; there's no silent scratchpad. So telling the
     model to "think silently, output only the final number" doesn't hide
     reasoning, it PREVENTS it, and accuracy collapses back to the no-CoT
     case (see `reason_then_hide` below). What actually works: let the model
     emit the full step-by-step reasoning, then strip it before showing the
-    user (parse out the final line) -- or use a model with a real hidden
+    user (parse out the final line), or use a model with a real hidden
     reasoning channel (e.g. extended thinking / o1-style models), where
     reasoning tokens exist but are withheld from the visible output. See
     `reason_then_hide_correctly` for the working version.
   - "Think silently" can still LOOK reliable on an easy problem with a strong
-    model -- a big model can pack a 3-step calculation into one forward pass
+    model: a big model can pack a 3-step calculation into one forward pass
     without externalizing it. That's not a hidden scratchpad, it's spare
     capacity, and it runs out as the problem gets harder. See TOUGH_PROBLEM
     below: same "think silently" prompt, more dependent steps, and the
@@ -52,7 +52,7 @@ PROBLEM = (
 
 # A deliberately harder problem: 6 dependent steps (vs. 3 above) with a rounding
 # rule the model has to track across steps. Correct answer: 763. Easy enough for
-# a strong model to nail with visible CoT every time -- hard enough that "think
+# a strong model to nail with visible CoT every time, hard enough that "think
 # silently" (no externalized steps) starts missing it, even on a strong model.
 TOUGH_PROBLEM = (
     "A warehouse starts with 1,000 crates. On day 1, 23% of the crates are "
@@ -85,14 +85,14 @@ def zero_shot_cot(problem: str = PROBLEM) -> str:
 
 def reason_then_hide(problem: str = PROBLEM) -> str:
     """Tempting but unreliable: asking the model to "think silently" doesn't
-    give it a hidden scratchpad -- it just suppresses the reasoning tokens
+    give it a hidden scratchpad; it just suppresses the reasoning tokens
     it needs to get the answer right. On an easy problem a strong model can
     sometimes get away with it (it has spare capacity to do the arithmetic
     in one forward pass); on TOUGH_PROBLEM that capacity runs out and it
     starts missing, the same way `no_cot` does. The fix that actually hides
     reasoning from the user without losing accuracy: run `zero_shot_cot`-style
     prompting (model emits full reasoning), then parse out just the
-    "ANSWER:" line before displaying it -- the hiding happens in your code,
+    "ANSWER:" line before displaying it; the hiding happens in your code,
     not in the model's head."""
     prompt = (
         f"{problem}\n\n"
