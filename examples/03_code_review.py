@@ -1,7 +1,7 @@
 """
 EXAMPLE 3 - CODE REVIEW ASSISTANT
 
-USE CASE: review a code snippet and return actionable, prioritized findings --
+USE CASE: review a code snippet and return actionable, prioritized findings,
 not a vague "looks fine" or a wall of nitpicks.
 
 Optimizations applied: expert persona, a review RUBRIC (what to look for),
