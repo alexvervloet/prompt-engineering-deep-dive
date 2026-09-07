@@ -2,11 +2,16 @@
 EXAMPLE 5 - NATURAL LANGUAGE -> SQL
 
 USE CASE: turn a plain-English question into a correct SQL query a program can
-run. A classic spot where a few key constraints prevent broken or unsafe SQL.
+run. A classic spot where a few key constraints cut the rate of broken SQL.
 
 Optimizations applied: provide the SCHEMA as context, constrain the SQL dialect,
-demand a read-only query, give a few-shot example, force step-by-step mapping,
+ask for a read-only query, give a few-shot example, force step-by-step mapping,
 and require output as runnable SQL only (no markdown fences).
+
+What the prompt does NOT do is make any of that safe. Every rule below is a
+request the model usually honors, not a constraint it operates under. The
+enforcement lives in the database: connect as a role that owns no write
+privileges, and the SELECT-only rule holds even when the model ignores it.
 
 Run:  secrun python examples/05_text_to_sql.py
 """
@@ -41,7 +46,9 @@ def naive() -> str:
 
 
 # --------------------------------------------------------------------------
-# AFTER: schema as grounding + dialect + safety + one example + output rules.
+# AFTER: schema as grounding + dialect + a read-only request + one example +
+# output rules. The read-only line lowers how often the model reaches for a write;
+# the database role is what makes a write impossible.
 # --------------------------------------------------------------------------
 OPTIMIZED_SYSTEM = f"""\
 You are a PostgreSQL expert. Convert the user's question into ONE SQL query.
@@ -91,9 +98,16 @@ if __name__ == "__main__":
     rule()
     print(
         "\nWHY IT'S BETTER:\n"
-        "  - The schema grounds column/table names so the model can't invent them.\n"
-        "  - 'READ-ONLY, SELECT only' is a critical safety guardrail.\n"
+        "  - The schema grounds column/table names, so invented ones get much rarer.\n"
         "  - Defining 'revenue'/'completed' removes business-logic ambiguity.\n"
         "  - The 'CANNOT ANSWER' escape hatch beats a confidently wrong query.\n"
-        "  - 'SQL only, no fences' makes the output directly runnable."
+        "  - 'SQL only, no fences' makes the output directly runnable.\n"
+        "\nWHAT IT STILL DOESN'T DO:\n"
+        "  - Prevent a wrong query. 'Much rarer' is not 'never', and a query can\n"
+        "    name only real columns and still answer the wrong question. Run it\n"
+        "    against a test database and check the result before you trust it.\n"
+        "  - Enforce READ-ONLY. That line is a request, not a permission. A system\n"
+        "    prompt is not a security boundary; a database role is. Grant SELECT\n"
+        "    and nothing else, and the guarantee no longer depends on the model.\n"
+        "    -> https://github.com/alexvervloet/genai-security-deep-dive"
     )

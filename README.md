@@ -115,7 +115,7 @@ secrun python examples/03_code_review.py
 | [02_data_extraction.py](examples/02_data_extraction.py) | Unstructured text → typed JSON | schema · normalization · null policy · `json=True` |
 | [03_code_review.py](examples/03_code_review.py) | Security-aware code review | persona · rubric · severity · fixed format |
 | [04_summarization.py](examples/04_summarization.py) | Audience-targeted TL;DR | audience · length limits · focus · grounding |
-| [05_text_to_sql.py](examples/05_text_to_sql.py) | Natural language → SQL | schema grounding · dialect · safety · few-shot |
+| [05_text_to_sql.py](examples/05_text_to_sql.py) | Natural language → SQL | schema grounding · dialect · few-shot · what a prompt can't enforce |
 | [06_classification.py](examples/06_classification.py) | Ticket routing / classification | closed label set · 'other' escape hatch · confidence · few-shot edges |
 
 ---
