@@ -47,8 +47,8 @@ console = Console()
 
 # --------------------------------------------------------------------------
 # A task = an instruction, two prompts to compare, and a labeled set of cases.
-# The score is a tolerant label match: we win if the expected label appears as
-# a word in the model's reply (so "Positive." or "positive sentiment" still pass).
+# The score is a tolerant match on ONE label: we win if the expected label is the
+# only label the reply names (so "Positive." or "positive sentiment" still pass).
 # --------------------------------------------------------------------------
 @dataclass
 class Case:
@@ -63,18 +63,30 @@ class Task:
     tuned: str
     cases: list[Case]
 
+    @property
+    def labels(self) -> set[str]:
+        """The label vocabulary, read off the labeled set itself."""
+        return {case.expected for case in self.cases}
 
-def score(output: str, expected: str) -> bool:
-    """Tolerant exact-ish match: is the expected label a word in the output?
+
+def score(output: str, expected: str, labels: set[str]) -> bool:
+    """Did the reply commit to the expected label, and only that label?
 
     Markdown decoration (*, #, `) is stripped before matching; it's chrome,
-    not signal, and shouldn't count for or against either prompt. A compound
-    hedge like "Mixed/Negative" still fails to match "Mixed": refusing to
-    commit to one label is a real failure, not a formatting artifact.
+    not signal, and shouldn't count for or against either prompt. Slashes are
+    split too, so a compound hedge reads as the two labels it names.
+
+    The "and only that label" half is the part that matters. Asking merely
+    whether the expected label appears somewhere in the reply is a scorer you
+    can pass without classifying anything: "Positive Negative Mixed" contains
+    every label, so it would score 100% on every case in the set and rate the
+    two prompts identical. A reply that names more than one label is refusing
+    to commit, which is a real failure and not a formatting artifact.
     """
-    cleaned = output.replace("*", " ").replace("#", " ").replace("`", " ")
+    cleaned = output.replace("*", " ").replace("#", " ").replace("`", " ").replace("/", " ")
     words = {w.strip(".,!?:;\"'()").lower() for w in cleaned.split()}
-    return expected.lower() in words
+    named = {label.lower() for label in labels if label.lower() in words}
+    return named == {expected.lower()}
 
 
 # --- Built-in task 1: sentiment (the running example from fundamentals/01) ---
@@ -123,7 +135,7 @@ PRIORITY = Task(
 BUILTIN = {t.name: t for t in (SENTIMENT, PRIORITY)}
 
 
-def evaluate(system: str, cases: list[Case]) -> tuple[float, list[tuple[Case, str, bool]]]:
+def evaluate(system: str, cases: list[Case], labels: set[str]) -> tuple[float, list[tuple[Case, str, bool]]]:
     """Run one prompt over every case; return its accuracy and per-case results."""
     results = []
     for case in cases:
@@ -132,7 +144,7 @@ def evaluate(system: str, cases: list[Case]) -> tuple[float, list[tuple[Case, st
             temperature=0,
             max_tokens=16,
         ).strip()
-        results.append((case, output, score(output, case.expected)))
+        results.append((case, output, score(output, case.expected, labels)))
     accuracy = sum(1 for _, _, passed in results if passed) / len(results) if results else 0.0
     return accuracy, results
 
@@ -140,8 +152,8 @@ def evaluate(system: str, cases: list[Case]) -> tuple[float, list[tuple[Case, st
 def compare(task: Task, show_misses: bool) -> None:
     console.print(f"\n[bold]Task:[/bold] {task.name}   [dim]({describe()})[/dim]\n")
 
-    acc_a, results_a = evaluate(task.naive, task.cases)
-    acc_b, results_b = evaluate(task.tuned, task.cases)
+    acc_a, results_a = evaluate(task.naive, task.cases, task.labels)
+    acc_b, results_b = evaluate(task.tuned, task.cases, task.labels)
 
     table = Table(title=f"Naive vs tuned prompt over {len(task.cases)} labeled cases")
     table.add_column("Prompt")
