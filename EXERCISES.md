@@ -270,6 +270,25 @@ edge cases. Hard cases are where prompt quality separates, which is why a good
 test set is mostly edge cases.
 </details>
 
+**Predict.** `score()` used to ask one question: does the expected label appear as a
+word in the reply? Name a single reply that scores 100% on the whole sentiment set
+without classifying anything.
+
+<details><summary>▸ Answer</summary>
+
+"Positive Negative Mixed". It contains every label, so it matches whichever one the
+case expected, on every case. Both prompts score 100%, the capstone reports a tie,
+and nothing in the output looks broken.
+
+This is worth more than the bug it describes. A scorer is a piece of software with
+its own failure modes, and a permissive one fails in the direction that flatters
+you, because a passing number reads like success. So when you measure a prompt, ask
+what the laziest possible output scores. If a degenerate answer passes, you are
+measuring the scorer, not the prompt. `score()` now requires the expected label to
+be the *only* label named, which is why a hedge like "Mixed/Negative" fails too:
+refusing to commit is a wrong answer, not a formatting quirk.
+</details>
+
 **Stretch.** Write your own task: a `cases.jsonl` of `{"text","expected"}` rows and
 two prompt files, then run `optimize.py --prompt-a naive.txt --prompt-b tuned.txt
 --data cases.jsonl`. The first time it tells you your "better" prompt was actually
