@@ -1,6 +1,6 @@
 # Exercises: make the learning stick
 
-Reading code teaches you less than *predicting* what it will do and then checking.
+Reading code teaches you less than *predicting* what it'll do and then checking.
 This file turns each lesson of the [README](README.md) into a few quick
 active-recall prompts.
 
@@ -157,7 +157,7 @@ stop sequence? Who actually runs the tool, the model or your code?
 Without the stop, the model writes its *own* fake `Observation:` and reasons over
 hallucinated data. The stop hands control back to your code at the right moment;
 *you* run the tool and feed the real result back. That control split is exactly how
-real tool use / agents work. Because GPT-5 does not support `stop`, this historical
+real tool use / agents work. Because GPT-5 doesn't support `stop`, this historical
 text lesson pins `gpt-4o-mini` on hosted OpenAI. Production code should use native,
 schema-validated tool calls instead of parsing `tool[input]` text.
 </details>
@@ -197,8 +197,8 @@ step by step" and worked examples help or hurt? How do you control depth instead
 It often *hurts*. The model already reasons internally, so the scaffolding is
 redundant and can box in its process. Give the goal + constraints + "what good
 looks like," then control depth with the model's effort/reasoning setting, not a
-longer prompt. The example holds effort constant across both prompts so it does
-not confound prompt style with inference compute.
+longer prompt. The example holds effort constant across both prompts so it doesn't
+confound prompt style with inference compute.
 </details>
 
 ---
@@ -283,7 +283,7 @@ and nothing in the output looks broken.
 This is worth more than the bug it describes. A scorer is a piece of software with
 its own failure modes, and a permissive one fails in the direction that flatters
 you, because a passing number reads like success. So when you measure a prompt, ask
-what the laziest possible output scores. If a degenerate answer passes, you are
+what the laziest possible output scores. If a degenerate answer passes, you're
 measuring the scorer, not the prompt. `score()` now requires the expected label to
 be the *only* label named, which is why a hedge like "Mixed/Negative" fails too:
 refusing to commit is a wrong answer, not a formatting quirk.
