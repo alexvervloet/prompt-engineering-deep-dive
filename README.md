@@ -21,7 +21,7 @@ predict-then-run prompt for each lesson.
 ## 0. The one big idea
 
 > **The model is fixed. The prompt is the program. You never touch the weights. You
-> change what you ask and how you ask it, and that is most of the quality you will ever
+> change what you ask and how you ask it, and that's most of the quality you'll ever
 > get.**
 
 Everything below is a variation on that. Zero-shot and few-shot are about how many
@@ -150,7 +150,7 @@ And some general heuristics.
 
 Everything points here. Every lesson argues that a tuned prompt beats a naive one. The
 capstone stops arguing and measures it. It runs both prompts over a small labeled set,
-scores each one, and tells you which won and by how much. That is the whole discipline
+scores each one, and tells you which won and by how much. That's the whole discipline
 in one tool, and the bridge to the
 [Evals deep dive](https://github.com/alexvervloet/evals-deep-dive).
 
@@ -300,4 +300,4 @@ And the whole series lands in one codebase in the
 [capstone](https://github.com/alexvervloet/deep-dive-capstone): a codebase Q&A tool
 built step by step, one tag per dive.
 
-**You are here: #3, Prompt Engineering.**
+**You're here: #3, Prompt Engineering.**
