@@ -22,7 +22,7 @@ thinking plus `output_config.effort`. No sampling temperature is sent.
 The OpenAI default model supports this directly. On the Claude stack, the repo's
 cheap Haiku default has no adaptive effort control, so set for example:
 
-    REASONING_MODEL=claude-sonnet-4-6
+    REASONING_MODEL=claude-sonnet-5
 
 Run:  secrun python fundamentals/14_reasoning_models.py
 """

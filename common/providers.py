@@ -235,7 +235,7 @@ def chat(
                 raise ValueError(
                     "claude-haiku-4-5 has no adaptive effort control. Set "
                     "REASONING_MODEL to a recent reasoning model such as "
-                    "claude-sonnet-4-6."
+                    "claude-sonnet-5."
                 )
             if temperature is not None:
                 raise ValueError(
