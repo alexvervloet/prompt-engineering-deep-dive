@@ -214,7 +214,10 @@ def chat(
         params: dict = {"max_tokens": max_tokens}
         if temperature is not None:
             # Claude's range is 0.0-1.0 (not 0-2).
-            params["temperature"] = min(temperature, 1.0)
+            # extra_body, not a keyword: anthropic 1.0 removed the sampling
+            # knobs from the Messages signature. Haiku 4.5 still accepts it
+            # server-side; Opus 4.7 and newer return a 400 either way.
+            params["extra_body"] = {"temperature": min(temperature, 1.0)}
         if system:
             params["system"] = system
         if stop:
@@ -286,7 +289,10 @@ def chat_stream(
         system, convo = _split_system(messages)
         params: dict = {"max_tokens": max_tokens}
         if temperature is not None:
-            params["temperature"] = min(temperature, 1.0)
+            # extra_body, not a keyword: anthropic 1.0 removed the sampling
+            # knobs from the Messages signature. Haiku 4.5 still accepts it
+            # server-side; Opus 4.7 and newer return a 400 either way.
+            params["extra_body"] = {"temperature": min(temperature, 1.0)}
         if system:
             params["system"] = system
         with _anthropic_client().messages.stream(
@@ -342,7 +348,10 @@ def structured(
         system, convo = _split_system(messages)
         params: dict = {"max_tokens": max_tokens}
         if temperature is not None:
-            params["temperature"] = min(temperature, 1.0)
+            # extra_body, not a keyword: anthropic 1.0 removed the sampling
+            # knobs from the Messages signature. Haiku 4.5 still accepts it
+            # server-side; Opus 4.7 and newer return a 400 either way.
+            params["extra_body"] = {"temperature": min(temperature, 1.0)}
         if system:
             params["system"] = system
         resp = _anthropic_client().messages.create(  # type: ignore[call-overload]
