@@ -57,7 +57,7 @@ set up in the sibling repos with `PROVIDER` in `.env`.
 
 | `PROVIDER` | Chat model | Key needed |
 |------------|-----------|------------|
-| `openai` (default) | OpenAI `gpt-5.4-nano` | `OPENAI_API_KEY` |
+| `openai` (default) | OpenAI `gpt-6-luna`, with reasoning switched off | `OPENAI_API_KEY` |
 | `claude` | Claude `claude-haiku-4-5` | `ANTHROPIC_API_KEY` |
 
 The only file that knows which provider you picked is
@@ -92,7 +92,7 @@ secrun python fundamentals/01_zero_shot.py
 | [07_delimiters_and_context.py](fundamentals/07_delimiters_and_context.py) | Delimiters and grounding | Separate instructions from data, and answer only from context. |
 | [08_prompt_chaining.py](fundamentals/08_prompt_chaining.py) | Prompt chaining | Break the task into a pipeline: generate, critique, revise. |
 | [09_self_consistency.py](fundamentals/09_self_consistency.py) | Self-consistency | Sample N times and majority-vote for accuracy. |
-| [10_parameters.py](fundamentals/10_parameters.py) | Decoding params | Sampling-model controls. GPT-5.6 uses reasoning effort instead. |
+| [10_parameters.py](fundamentals/10_parameters.py) | Decoding params | Sampling controls, and why a reasoning model only takes them with reasoning off. |
 | [11_react.py](fundamentals/11_react.py) | Classic text ReAct | Thought, action, observation with a stop-compatible model. Prefer native tools in production. |
 | [12_reflexion.py](fundamentals/12_reflexion.py) | Reflexion | Attempt, verify, reflect, retry, against a real check rather than vibes. |
 | [13_meta_prompting.py](fundamentals/13_meta_prompting.py) | Meta-prompting | Use the model to rewrite a weak prompt into a strong one. |
@@ -140,8 +140,9 @@ And some general heuristics.
   doesn't need it.
 - **Constrain the output** when code will parse it, and still parse defensively.
 - **Match temperature to the task** on models that support sampling controls. Use `0`
-  for extraction, classification, and code, and go higher for creative work. On GPT-5.6,
-  omit temperature and set reasoning effort on purpose.
+  for extraction, classification, and code, and go higher for creative work. Reasoning
+  models only accept temperature with `reasoning_effort="none"`; once you want them to
+  think, omit temperature and set the effort on purpose.
 - **Iterate.** Prompt engineering is empirical. Change one thing, observe, repeat.
 
 ---
