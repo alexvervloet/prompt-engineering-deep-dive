@@ -31,8 +31,12 @@ The provider differences this file absorbs for you:
   - A strict JSON *schema* is `json_schema` on OpenAI and a forced *tool call* on
     Claude; `structured()` does the right one.
   - `stop` strings are `stop` on compatible OpenAI models and `stop_sequences`
-    on Claude. Unsupported GPT-5 combinations fail loudly; nothing is dropped.
+    on Claude. Unsupported GPT-5/GPT-6 combinations fail loudly; nothing is dropped.
   - `reasoning_effort` uses OpenAI's Responses API or Claude adaptive thinking.
+  - The OpenAI default, gpt-6-luna, reasons unless told not to. Plain chat calls
+    send `reasoning_effort="none"` so temperature and the lessons' timings work,
+    but only to models that accept it (a MODEL override to gpt-4o-mini or
+    gpt-6-astra would 400 on it).
 """
 
 import json as _json
@@ -45,7 +49,7 @@ from dotenv import load_dotenv
 # Load `.env` once, when this module is first imported (never commit `.env`).
 load_dotenv()
 
-_OPENAI_CHAT = "gpt-5.4-nano"
+_OPENAI_CHAT = "gpt-6-luna"
 _CLAUDE_CHAT = "claude-haiku-4-5"
 
 _KEYS = {
@@ -127,9 +131,27 @@ def _split_system(messages: list[dict]) -> tuple[str, list[dict]]:
     return "\n\n".join(system_parts), convo
 
 
+def _openai_accepts_reasoning_none(model: str) -> bool:
+    """Can this model switch reasoning off with reasoning_effort="none"?
+
+    Probed live on 2026-10-03. Yes: every gpt-5.x id and gpt-6-luna/-sol. No:
+    gpt-5-nano (it predates "none"), gpt-6-astra, gpt-6.1-sol, and the gpt-4o
+    line, which rejects the parameter outright."""
+    return model.startswith("gpt-5.") or model in ("gpt-6-luna", "gpt-6-sol")
+
+
+def _openai_reasoning_off(model: str) -> dict:
+    """Keyword args that turn reasoning off, or nothing if the model can't.
+
+    gpt-6-luna (the default) reasons unless told not to, and while it does it
+    rejects temperature and function tools on chat completions."""
+    return {"reasoning_effort": "none"} if _openai_accepts_reasoning_none(model) else {}
+
+
 def _openai_model_rejects_temperature(model: str) -> bool:
-    """GPT-5.6 controls depth with reasoning effort, not sampling knobs."""
-    return model.startswith("gpt-5.6")
+    """Reasoning models that can't switch reasoning off reject sampling knobs."""
+    reasoning_model = model.startswith(("gpt-5", "gpt-6", "o1", "o3", "o4"))
+    return reasoning_model and not _openai_accepts_reasoning_none(model)
 
 
 def _validate_openai_controls(
@@ -144,7 +166,7 @@ def _validate_openai_controls(
             f"{model} does not accept temperature. Pass temperature=None and, "
             "for reasoning work, set reasoning_effort instead."
         )
-    if stop and model.startswith("gpt-5"):
+    if stop and model.startswith(("gpt-5", "gpt-6")):
         raise ValueError(
             f"{model} does not support stop sequences. Use a stop-compatible "
             "model for classic text ReAct, or use native tool calling / structured outputs."
@@ -204,6 +226,7 @@ def chat(
             model=selected_model,
             messages=messages,  # type: ignore[arg-type]
             max_completion_tokens=max_tokens,
+            **_openai_reasoning_off(selected_model),
             **params,
         )
         return resp.choices[0].message.content or ""
@@ -277,6 +300,7 @@ def chat_stream(
             messages=messages,  # type: ignore[arg-type]
             max_completion_tokens=max_tokens,
             stream=True,
+            **_openai_reasoning_off(selected_model),
             **params,
         )
         for chunk in stream:
@@ -340,6 +364,7 @@ def structured(
                 "type": "json_schema",
                 "json_schema": {"name": name, "schema": schema, "strict": True},
             },
+            **_openai_reasoning_off(selected_model),
             **params,
         )
         return resp.choices[0].message.content or ""
