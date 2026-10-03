@@ -144,7 +144,9 @@ Which knob bounds cost and which is OpenAI-only?
 Extraction/code → temperature 0; brainstorming → 0.7–1.0. `max_tokens` bounds
 cost/latency. `seed` (reproducible sampling) is OpenAI-only; Claude's temperature
 range is 0–1 (not 0–2). Tune temperature *or* top_p, not both. These are
-sampling-model controls: GPT-5.6 rejects them and uses explicit reasoning effort.
+sampling controls, and a reasoning model only takes them with reasoning switched
+off: gpt-6-luna accepts temperature at `reasoning_effort="none"` and rejects it at any
+other effort, while gpt-6-astra can't switch reasoning off and never accepts it.
 </details>
 
 ### 11: ReAct
