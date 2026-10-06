@@ -256,7 +256,7 @@ Run `secrun python check_setup.py` first. It catches most problems. Then, by sym
 | `AuthenticationError` / 401 | The key is present but wrong; check it matches the `PROVIDER` you set. |
 | A JSON lesson prints prose instead of JSON | A weaker model, often a local one, ignored the format. `json=True` and `structured()` help, and the lessons also parse defensively. |
 | Running against a local model and it's flaky on JSON or ReAct | Small models follow strict formats less reliably, so try a more capable one such as qwen2.5 or llama3.1, or the hosted stack. |
-| `SyntaxError` or odd type errors on startup | You're likely on Python 3.9 or older. This repo needs 3.10+, and `check_setup.py` confirms your version. |
+| `SyntaxError` or odd type errors on startup | You're likely on Python 3.10 or older. This repo needs 3.11+, and `check_setup.py` confirms your version. |
 
 Still stuck? Every file is small and self-contained. Open it, read the docstring
 at the top, and run it directly.
